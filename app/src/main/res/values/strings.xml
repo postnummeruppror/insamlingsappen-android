@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Insamlingsappen</string>
+    <string name="action_settings">Settings</string>
+    <string name="postnummer_hint">Postnummer</string>
+    <string name="longitude">Longitud</string>
+    <string name="latitude">Latitud</string>
+    <string name="precision">Precision</string>
+
+</resources>
