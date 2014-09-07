@@ -3,8 +3,6 @@
 
     <string name="app_name">Insamlingsappen</string>
 
-    <string name="accountIdentity">accountIdentity</string>
-
     <string name="action_settings">Inställningar</string>
 
     <string name="postnummer_hint">Postnummer</string>

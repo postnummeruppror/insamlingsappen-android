@@ -9,9 +9,9 @@ import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -23,20 +23,14 @@ import android.widget.Toast;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
 import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.StringWriter;
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class Insamling extends ActionBarActivity implements LocationListener {
@@ -66,7 +60,11 @@ public class Insamling extends ActionBarActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        sharedPref = getSharedPreferences(getString(R.string.accountIdentity), Context.MODE_PRIVATE);
+        sharedPref = getSharedPreferences("account", Context.MODE_PRIVATE);
+        accountIdentity = sharedPref.getString("accountIdentity", null);
+        if (accountIdentity == null) {
+            createAccount();
+        }
 
         httpClient = new DefaultHttpClient();
 
@@ -324,7 +322,7 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                     accountIdentity = responseJson.getString("accountIdentity");
 
                     SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString(getString(R.string.accountIdentity), accountIdentity);
+                    editor.putString("accountIdentity", accountIdentity);
                     editor.commit();
 
                 } else {
