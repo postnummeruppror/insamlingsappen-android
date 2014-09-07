@@ -61,12 +61,14 @@ public class Insamling extends ActionBarActivity implements LocationListener {
         super.onCreate(savedInstanceState);
 
         sharedPref = getSharedPreferences("account", Context.MODE_PRIVATE);
+
+        httpClient = new DefaultHttpClient();
+
         accountIdentity = sharedPref.getString("accountIdentity", null);
         if (accountIdentity == null) {
             createAccount();
         }
 
-        httpClient = new DefaultHttpClient();
 
         setContentView(R.layout.activity_insamling);
 
@@ -85,6 +87,9 @@ public class Insamling extends ActionBarActivity implements LocationListener {
             public void onClick(View view) {
                 if (currentLocation == null) {
                     // todo
+
+                    Toast.makeText(Insamling.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+
                 } else {
                     // todo are you sure? please check postal code before submitting
 
@@ -94,7 +99,7 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                         json.put("accountIdentity", accountIdentity);
 
                         json.put("latitude", currentLocation.getLatitude());
-                        json.put("longitude", currentLocation.getLatitude());
+                        json.put("longitude", currentLocation.getLongitude());
                         json.put("altitude", currentLocation.getAltitude());
                         json.put("provider", currentLocation.getProvider());
                         json.put("accuracy", currentLocation.getAccuracy());
@@ -132,6 +137,8 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                             JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
                             if (responseJson.getBoolean("success")) {
                                 // todo report success
+
+                                Toast.makeText(Insamling.this, "Rapporten mottagen hos server!", Toast.LENGTH_LONG).show();
 
                                 postalCodeEditText.setText("");
 
@@ -281,11 +288,13 @@ public class Insamling extends ActionBarActivity implements LocationListener {
 
     public void createAccount() {
 
+        Toast.makeText(this, "Registrerar nytt konto...", Toast.LENGTH_SHORT).show();
 
         JSONObject json = new JSONObject();
 
         try {
-            json.put("emailAddress", accountIdentity);
+            // todo ask for email address!
+            json.put("emailAddress", null);
 
         } catch (Exception e) {
             Log.e("todo tag", "Exception while assembling JSON object for account creation", e);
@@ -319,11 +328,13 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                 if (responseJson.getBoolean("success")) {
                     // todo report success
 
-                    accountIdentity = responseJson.getString("accountIdentity");
+                    accountIdentity = responseJson.getString("identity");
 
                     SharedPreferences.Editor editor = sharedPref.edit();
                     editor.putString("accountIdentity", accountIdentity);
                     editor.commit();
+
+                    Toast.makeText(this, "Konto registrerat!", Toast.LENGTH_LONG).show();
 
                 } else {
                     // todo report error
