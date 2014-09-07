@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.os.StrictMode;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -60,6 +61,11 @@ public class Insamling extends ActionBarActivity implements LocationListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        if (android.os.Build.VERSION.SDK_INT > 9) {
+            StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
+            StrictMode.setThreadPolicy(policy);
+        }
+
         sharedPref = getSharedPreferences("account", Context.MODE_PRIVATE);
 
         httpClient = new DefaultHttpClient();
@@ -68,7 +74,6 @@ public class Insamling extends ActionBarActivity implements LocationListener {
         if (accountIdentity == null) {
             createAccount();
         }
-
 
         setContentView(R.layout.activity_insamling);
 
@@ -115,6 +120,7 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                     HttpResponse response;
                     try {
                         HttpPost post = new HttpPost("http://" + serverHostname + "/api/location_sample/create");
+                        Log.i("url", "http://" + serverHostname + "/api/location_sample/create");
                         post.setEntity(new StringEntity(json.toString(), "UTF-8"));
                         response = httpClient.execute(post);
                     } catch (Exception e) {
