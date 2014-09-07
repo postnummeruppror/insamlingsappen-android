@@ -10,6 +10,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -57,11 +58,12 @@ public class Insamling extends ActionBarActivity implements LocationListener {
 
     private SharedPreferences sharedPref;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (android.os.Build.VERSION.SDK_INT > 9) {
+        if (android.os.Build.VERSION.SDK_INT > 8) {
             StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
             StrictMode.setThreadPolicy(policy);
         }
@@ -91,8 +93,6 @@ public class Insamling extends ActionBarActivity implements LocationListener {
             @Override
             public void onClick(View view) {
                 if (currentLocation == null) {
-                    // todo
-
                     Toast.makeText(Insamling.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
 
                 } else {
@@ -112,6 +112,7 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                         json.put("postalCode", postalCodeEditText.getText());
 
                     } catch (Exception e) {
+                        Toast.makeText(Insamling.this, "Ett fel uppstod! Rapporteringen avbruten!", Toast.LENGTH_LONG).show();
                         Log.e("todo tag", "Exception while assembling JSON object for location sample", e);
                         return;
                     }
@@ -120,41 +121,41 @@ public class Insamling extends ActionBarActivity implements LocationListener {
                     HttpResponse response;
                     try {
                         HttpPost post = new HttpPost("http://" + serverHostname + "/api/location_sample/create");
-                        Log.i("url", "http://" + serverHostname + "/api/location_sample/create");
                         post.setEntity(new StringEntity(json.toString(), "UTF-8"));
                         response = httpClient.execute(post);
                     } catch (Exception e) {
-                        // todo
+                        Toast.makeText(Insamling.this, "Ett fel uppstod! Rapporteringen avbruten!", Toast.LENGTH_LONG).show();
                         Log.e("todo tag", "Exception while sending create location sample request to server", e);
+                        return;
+                    }
+
+
+                    if (response.getStatusLine().getStatusCode() != 200) {
+                        Toast.makeText(Insamling.this, "HTTP " + response.getStatusLine().getStatusCode() + "!  Rapporteringen avbruten!", Toast.LENGTH_LONG).show();
+                        Log.e("todo tag", "Unexpected server response!");
                         return;
                     }
 
                     try {
 
-                        if (response.getStatusLine().getStatusCode() != 200) {
-                            // todo report unexpected response
-                            Log.e("todo tag", "Unexpected server response!");
+                        StringWriter jsonWriter = new StringWriter(1024);
+                        IOUtils.copy(response.getEntity().getContent(), jsonWriter);
+                        // now consumed... no need for below
+//                            response.getEntity().getContent().close();
+                        JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
+                        if (responseJson.getBoolean("success")) {
+
+                            postalCodeEditText.setText("");
+                            Toast.makeText(Insamling.this, "Rapporten mottagen av server!", Toast.LENGTH_LONG).show();
 
                         } else {
-                            StringWriter jsonWriter = new StringWriter(1024);
-                            IOUtils.copy(response.getEntity().getContent(), jsonWriter);
-                            // now consumed... no need for below
-//                            response.getEntity().getContent().close();
-                            JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
-                            if (responseJson.getBoolean("success")) {
-                                // todo report success
+                            Toast.makeText(Insamling.this, "Servern avvisade rapporten!", Toast.LENGTH_LONG).show();
 
-                                Toast.makeText(Insamling.this, "Rapporten mottagen hos server!", Toast.LENGTH_LONG).show();
-
-                                postalCodeEditText.setText("");
-
-                            } else {
-                                // todo report error
-                            }
                         }
 
+
                     } catch (Exception e) {
-                        // todo
+                        Toast.makeText(Insamling.this, "Ett fel uppstod! Rapporteringen avbruten!", Toast.LENGTH_LONG).show();
                         Log.e("todo tag", "Exception while processing server response", e);
                     }
 
@@ -314,41 +315,41 @@ public class Insamling extends ActionBarActivity implements LocationListener {
             post.setEntity(new StringEntity(json.toString(), "UTF-8"));
             response = httpClient.execute(post);
         } catch (Exception e) {
-            // todo
+            Toast.makeText(Insamling.this, "Ett fel uppstod! Inget konto registrerat!", Toast.LENGTH_LONG).show();
             Log.e("todo tag", "Exception while sending create account request to server", e);
             return;
         }
 
-        try {
+        if (response.getStatusLine().getStatusCode() != 200) {
+            Toast.makeText(Insamling.this, "HTTP " + response.getStatusLine().getStatusCode() + "! Inget konto registrerat!", Toast.LENGTH_LONG).show();
+            Log.e("todo tag", "Unexpected server response!");
+            return;
+        }
 
-            if (response.getStatusLine().getStatusCode() != 200) {
-                // todo report unexpected response
-                Log.e("todo tag", "Unexpected server response!");
+        try {
+            StringWriter jsonWriter = new StringWriter(1024);
+            IOUtils.copy(response.getEntity().getContent(), jsonWriter);
+            // now consumed... no need for below
+//                            response.getEntity().getContent().close();
+            JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
+            if (responseJson.getBoolean("success")) {
+
+                accountIdentity = responseJson.getString("identity");
+
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString("accountIdentity", accountIdentity);
+                editor.commit();
+
+                Toast.makeText(this, "Konto registrerat!", Toast.LENGTH_LONG).show();
 
             } else {
-                StringWriter jsonWriter = new StringWriter(1024);
-                IOUtils.copy(response.getEntity().getContent(), jsonWriter);
-                // now consumed... no need for below
-//                            response.getEntity().getContent().close();
-                JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
-                if (responseJson.getBoolean("success")) {
-                    // todo report success
+                Toast.makeText(Insamling.this, "Ett fel uppstod! Inget konto registrerat!", Toast.LENGTH_LONG).show();
 
-                    accountIdentity = responseJson.getString("identity");
-
-                    SharedPreferences.Editor editor = sharedPref.edit();
-                    editor.putString("accountIdentity", accountIdentity);
-                    editor.commit();
-
-                    Toast.makeText(this, "Konto registrerat!", Toast.LENGTH_LONG).show();
-
-                } else {
-                    // todo report error
-                }
             }
 
+
         } catch (Exception e) {
-            // todo
+            Toast.makeText(Insamling.this, "Ett fel uppstod! Inget konto registrerat!", Toast.LENGTH_LONG).show();
             Log.e("todo tag", "Exception while processing server response", e);
         }
 
