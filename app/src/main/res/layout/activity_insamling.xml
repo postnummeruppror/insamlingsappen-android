@@ -16,30 +16,55 @@
         android:paddingRight="16dp">
 
         <TextView
-            android:id="@+id/precision"
+            android:id="@+id/provider"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="@string/precision" />
+            android:text="@string/provider" />
 
         <TextView
-            android:id="@+id/latitud"
+            android:id="@+id/altitude"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/altitude" />
+
+        <TextView
+            android:id="@+id/accuracy"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/accuracy" />
+
+        <TextView
+            android:id="@+id/latitude"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/latitude" />
 
         <TextView
-            android:id="@+id/longitud"
+            android:id="@+id/longitude"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:text="@string/longitude" />
 
+        <View
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:background="#ffffff"/>
+
 
         <EditText
-            android:id="@+id/postnummer"
+            android:id="@+id/postal_code"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:hint="@string/postnummer_hint"
             android:inputType="number" />
+
+        <Button
+            android:id="@+id/submit_postal_code"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/send_postnummer_hint"
+            android:text="@string/send_postnummer"
+            />
 
     </LinearLayout>
 

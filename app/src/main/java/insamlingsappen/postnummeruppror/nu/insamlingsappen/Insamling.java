@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
@@ -11,32 +12,145 @@ import android.location.LocationManager;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.methods.HttpPut;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import java.io.StringWriter;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Insamling extends ActionBarActivity implements LocationListener {
 
-    private TextView latitude;
-    private TextView longitude;
-    private TextView precision;
+    private HttpClient httpClient;
+    private String serverHostname = "insamling.postnummeruppror.nu.kodapan.se";
+
+    private String accountIdentity;
+    private Location currentLocation;
+
+    private TextView latitudeTextView;
+    private TextView longitudeTextView;
+    private TextView accuracyTextView;
+    private TextView altitudeTextView;
+    private TextView providerTextView;
+
+    private EditText postalCodeEditText;
+    private Button sendPostalCodeButton;
 
 
     private LocationManager locationManager;
     private String provider;
 
+    private SharedPreferences sharedPref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        sharedPref = getSharedPreferences(getString(R.string.accountIdentity), Context.MODE_PRIVATE);
+
+        httpClient = new DefaultHttpClient();
+
         setContentView(R.layout.activity_insamling);
 
-        latitude = (TextView) findViewById(R.id.latitud);
-        longitude = (TextView) findViewById(R.id.longitud);
-        precision = (TextView) findViewById(R.id.precision);
+        latitudeTextView = (TextView) findViewById(R.id.latitude);
+        longitudeTextView = (TextView) findViewById(R.id.longitude);
+        accuracyTextView = (TextView) findViewById(R.id.accuracy);
+        altitudeTextView = (TextView) findViewById(R.id.altitude);
+        providerTextView = (TextView) findViewById(R.id.provider);
 
+
+        postalCodeEditText = (EditText) findViewById(R.id.postal_code);
+        sendPostalCodeButton = (Button) findViewById(R.id.submit_postal_code);
+
+        sendPostalCodeButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (currentLocation == null) {
+                    // todo
+                } else {
+                    // todo are you sure? please check postal code before submitting
+
+                    JSONObject json = new JSONObject();
+
+                    try {
+                        json.put("accountIdentity", accountIdentity);
+
+                        json.put("latitude", currentLocation.getLatitude());
+                        json.put("longitude", currentLocation.getLatitude());
+                        json.put("altitude", currentLocation.getAltitude());
+                        json.put("provider", currentLocation.getProvider());
+                        json.put("accuracy", currentLocation.getAccuracy());
+
+                        json.put("postalCode", postalCodeEditText.getText());
+
+                    } catch (Exception e) {
+                        Log.e("todo tag", "Exception while assembling JSON object for location sample", e);
+                        return;
+                    }
+
+
+                    HttpResponse response;
+                    try {
+                        HttpPost post = new HttpPost("http://" + serverHostname + "/api/location_sample/create");
+                        post.setEntity(new StringEntity(json.toString(), "UTF-8"));
+                        response = httpClient.execute(post);
+                    } catch (Exception e) {
+                        // todo
+                        Log.e("todo tag", "Exception while sending create location sample request to server", e);
+                        return;
+                    }
+
+                    try {
+
+                        if (response.getStatusLine().getStatusCode() != 200) {
+                            // todo report unexpected response
+                            Log.e("todo tag", "Unexpected server response!");
+
+                        } else {
+                            StringWriter jsonWriter = new StringWriter(1024);
+                            IOUtils.copy(response.getEntity().getContent(), jsonWriter);
+                            // now consumed... no need for below
+//                            response.getEntity().getContent().close();
+                            JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
+                            if (responseJson.getBoolean("success")) {
+                                // todo report success
+
+                                postalCodeEditText.setText("");
+
+                            } else {
+                                // todo report error
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        // todo
+                        Log.e("todo tag", "Exception while processing server response", e);
+                    }
+
+
+                }
+            }
+        });
 
         // Get the location manager
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -56,13 +170,14 @@ public class Insamling extends ActionBarActivity implements LocationListener {
             System.out.println("Provider " + provider + " has been selected.");
             onLocationChanged(location);
         } else {
-            latitude.setText("N/A");
-            longitude.setText("N/A");
-            precision.setText("N/A");
+            latitudeTextView.setText("N/A");
+            longitudeTextView.setText("N/A");
+            accuracyTextView.setText("N/A");
+            altitudeTextView.setText("N/A");
+            providerTextView.setText("N/A");
         }
 
         locationManager.requestLocationUpdates(provider, 0, 0, this);
-
 
 
     }
@@ -103,9 +218,15 @@ public class Insamling extends ActionBarActivity implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
-        latitude.setText(String.valueOf(location.getLatitude()));
-        longitude.setText(String.valueOf(location.getLongitude()));
-        precision.setText(String.valueOf(location.getAccuracy()));
+
+        currentLocation = location;
+
+        latitudeTextView.setText(String.valueOf(location.getLatitude()));
+        longitudeTextView.setText(String.valueOf(location.getLongitude()));
+        accuracyTextView.setText(String.valueOf(location.getAccuracy()));
+        altitudeTextView.setText(String.valueOf(location.getAltitude()));
+        providerTextView.setText(String.valueOf(location.getProvider()));
+
     }
 
     @Override
@@ -160,5 +281,62 @@ public class Insamling extends ActionBarActivity implements LocationListener {
         alertDialog.show();
     }
 
+    public void createAccount() {
+
+
+        JSONObject json = new JSONObject();
+
+        try {
+            json.put("emailAddress", accountIdentity);
+
+        } catch (Exception e) {
+            Log.e("todo tag", "Exception while assembling JSON object for account creation", e);
+            return;
+        }
+
+
+        HttpResponse response;
+        try {
+            HttpPost post = new HttpPost("http://" + serverHostname + "/api/account/create");
+            post.setEntity(new StringEntity(json.toString(), "UTF-8"));
+            response = httpClient.execute(post);
+        } catch (Exception e) {
+            // todo
+            Log.e("todo tag", "Exception while sending create account request to server", e);
+            return;
+        }
+
+        try {
+
+            if (response.getStatusLine().getStatusCode() != 200) {
+                // todo report unexpected response
+                Log.e("todo tag", "Unexpected server response!");
+
+            } else {
+                StringWriter jsonWriter = new StringWriter(1024);
+                IOUtils.copy(response.getEntity().getContent(), jsonWriter);
+                // now consumed... no need for below
+//                            response.getEntity().getContent().close();
+                JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
+                if (responseJson.getBoolean("success")) {
+                    // todo report success
+
+                    accountIdentity = responseJson.getString("accountIdentity");
+
+                    SharedPreferences.Editor editor = sharedPref.edit();
+                    editor.putString(getString(R.string.accountIdentity), accountIdentity);
+                    editor.commit();
+
+                } else {
+                    // todo report error
+                }
+            }
+
+        } catch (Exception e) {
+            // todo
+            Log.e("todo tag", "Exception while processing server response", e);
+        }
+
+    }
 
 }
