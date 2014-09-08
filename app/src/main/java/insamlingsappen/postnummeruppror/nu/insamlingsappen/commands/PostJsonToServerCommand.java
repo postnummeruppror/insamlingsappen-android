@@ -14,7 +14,7 @@ import java.io.StringWriter;
 /**
  * Created by kalle on 07/09/14.
  */
-public abstract  class PostJsonToServerCommand implements Runnable {
+public abstract class PostJsonToServerCommand implements Runnable {
 
   private HttpClient httpClient;
   private String serverHostname;
@@ -25,17 +25,24 @@ public abstract  class PostJsonToServerCommand implements Runnable {
   private String failureMessage;
   private Exception failureException;
 
-  /** @return Path part of URL, needs to start with a forward slash. E.g. '/api/foo/bar' */
+  /**
+   * @return Path part of URL, needs to start with a forward slash. E.g. '/api/foo/bar'
+   */
   protected abstract String postUrlPathFactory();
-  protected abstract void requestJsonBuilder(JSONObject json) throws JSONException;
+
+  protected abstract void assembleRequestJson(JSONObject json) throws JSONException;
+
+  protected void processSuccessfulResponse(JSONObject json) throws JSONException {
+
+  }
 
   @Override
   public void run() {
     JSONObject json = new JSONObject();
 
     try {
-      
-      requestJsonBuilder(json);
+
+      assembleRequestJson(json);
 
     } catch (JSONException e) {
       success = false;
@@ -71,6 +78,7 @@ public abstract  class PostJsonToServerCommand implements Runnable {
       JSONObject responseJson = new JSONObject(new JSONTokener(jsonWriter.toString()));
       if (responseJson.getBoolean("success")) {
         success = true;
+        processSuccessfulResponse(responseJson);
 
       } else {
         success = false;

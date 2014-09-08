@@ -29,7 +29,7 @@ public class SetAccount extends PostJsonToServerCommand {
   }
 
   @Override
-  protected void requestJsonBuilder(JSONObject json) throws JSONException {
+  protected void assembleRequestJson(JSONObject json) throws JSONException {
     json.put("identity", identity);
     json.put("emailAddress", emailAddress);
   }

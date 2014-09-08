@@ -35,7 +35,7 @@ public class CreateLocationSample extends PostJsonToServerCommand {
   }
 
   @Override
-  protected void requestJsonBuilder(JSONObject json) throws JSONException {
+  protected void assembleRequestJson(JSONObject json) throws JSONException {
     json.put("accountIdentity", accountIdentity);
 
     json.put("application", application);

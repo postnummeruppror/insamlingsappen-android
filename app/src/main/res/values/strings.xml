@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Insamlingsappen</string>
+  <string name="app_name">Postnummeruppror</string>
 
-  <string name="action_settings">Inställningar</string>
+  <string name="action_settings">Om</string>
 
   <string name="provider">Datakälla:</string>
   <string name="altitude">Höjd över havet:</string>
@@ -11,10 +11,18 @@
   <string name="latitude">Latitud:</string>
   <string name="longitude">Longitud:</string>
 
-  <string name="postnummer_hint">Postnummret där du befinner dig nu:</string>
+  <string name="postnummer_header">Postnummret där du befinner dig nu:</string>
 
   <string name="send_postnummer">Registrera postnummer</string>
-  <string name="not_applicable">N/A</string>
-  <string name="debug_hint">Information om din nuvarande position:</string>
+  <string name="not_applicable">Väntar på data…</string>
+  <string name="location_header">Information om senast kända position:</string>
+  <string name="timestamp">Tidsstämpel:</string>
+  <string name="system_info_header">Statistik från servern:</string>
+  <string name="server_number_of_accounts">Antal användare:</string>
+  <string name="server_number_of_location_samples">Antal rapporter:</string>
+  <string name="server_number_of_location_samples_100_meters">…inom 100 meter:</string>
+  <string name="server_number_of_location_samples_500_meters">…inom 500 meter:</string>
+  <string name="update_server_statitics">Uppdatera serverstatistik</string>
+
 
 </resources>

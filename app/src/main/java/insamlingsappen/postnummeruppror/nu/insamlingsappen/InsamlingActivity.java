@@ -25,9 +25,12 @@ import android.widget.Toast;
 import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.DefaultHttpClient;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.UUID;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.CreateLocationSample;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetLocationStatistics;
 
 
 public class InsamlingActivity extends ActionBarActivity implements LocationListener {
@@ -37,6 +40,7 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
   private String accountIdentity;
   private Location currentLocation;
 
+  private TextView timestampTextView;
   private TextView latitudeTextView;
   private TextView longitudeTextView;
   private TextView accuracyTextView;
@@ -45,6 +49,11 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
 
   private EditText postalCodeEditText;
   private Button sendPostalCodeButton;
+
+  private Button updateServerStatisticsButton;
+
+  private TextView numberOfAccountsTextView;
+  private TextView numberOfLocationSamplesTextView;
 
 
   private LocationManager locationManager;
@@ -81,10 +90,11 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
 
     setContentView(R.layout.activity_insamling);
 
-    latitudeTextView = (TextView) findViewById(R.id.latitude);
-    longitudeTextView = (TextView) findViewById(R.id.longitude);
-    accuracyTextView = (TextView) findViewById(R.id.accuracy);
-    altitudeTextView = (TextView) findViewById(R.id.altitude);
+    timestampTextView = (TextView) findViewById(R.id.location_timestamp);
+    latitudeTextView = (TextView) findViewById(R.id.location_latitude);
+    longitudeTextView = (TextView) findViewById(R.id.location_longitude);
+    accuracyTextView = (TextView) findViewById(R.id.location_accuracy);
+    altitudeTextView = (TextView) findViewById(R.id.location_altitude);
     providerTextView = (TextView) findViewById(R.id.provider);
 
 
@@ -94,11 +104,15 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
     sendPostalCodeButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (currentLocation == null) {
+        if (currentLocation.getTime() < System.currentTimeMillis() - (1000 * 30)) {
+          Toast.makeText(InsamlingActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+
+        } else  if (currentLocation == null) {
           Toast.makeText(InsamlingActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
 
         } else {
           // todo are you sure? please check postal code before submitting
+
 
           CreateLocationSample createLocationSample = new CreateLocationSample();
 
@@ -135,6 +149,19 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
       }
     });
 
+    updateServerStatisticsButton = (Button) findViewById(R.id.update_server_statistics);
+    numberOfAccountsTextView = (TextView) findViewById(R.id.server_number_of_accounts);
+    numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_number_of_location_samples);
+
+    updateServerStatistics();
+
+    updateServerStatisticsButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        updateServerStatistics();
+      }
+    });
+
     // Get the location manager
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
 
@@ -145,22 +172,15 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
     // Define the criteria how to select the locatioin provider -> use
     // default
     Criteria criteria = new Criteria();
-    provider = locationManager.getBestProvider(criteria, false);
+    provider = locationManager.getBestProvider(criteria, true);
     Location location = locationManager.getLastKnownLocation(provider);
 
     // Initialize the location fields
     if (location != null) {
-      System.out.println("Provider " + provider + " has been selected.");
       onLocationChanged(location);
-    } else {
-      latitudeTextView.setText("N/A");
-      longitudeTextView.setText("N/A");
-      accuracyTextView.setText("N/A");
-      altitudeTextView.setText("N/A");
-      providerTextView.setText("N/A");
     }
-
     locationManager.requestLocationUpdates(provider, 0, 0, this);
+
 
 
   }
@@ -204,6 +224,7 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
 
     currentLocation = location;
 
+    timestampTextView.setText(String.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(location.getTime()))));
     latitudeTextView.setText(String.valueOf(location.getLatitude()));
     longitudeTextView.setText(String.valueOf(location.getLongitude()));
     accuracyTextView.setText(String.valueOf(location.getAccuracy()));
@@ -264,5 +285,32 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
     alertDialog.show();
   }
 
+
+  public void updateServerStatistics() {
+    updateServerStatisticsButton.setEnabled(false);
+    try {
+
+      GetLocationStatistics getLocationStatistics = new GetLocationStatistics();
+      getLocationStatistics.setHttpClient(httpClient);
+      getLocationStatistics.setServerHostname(Application.serverHostname);
+      getLocationStatistics.setLatitude(currentLocation.getLatitude());
+      getLocationStatistics.setLongitude(currentLocation.getLongitude());
+      getLocationStatistics.run();
+      if (getLocationStatistics.getSuccess()) {
+
+        numberOfAccountsTextView.setText(String.valueOf(getLocationStatistics.getNumberOfAccounts()));
+        numberOfLocationSamplesTextView.setText(String.valueOf(getLocationStatistics.getNumberOfLocationSamples()));
+
+      } else {
+        Toast.makeText(InsamlingActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("GetLocationStatistics", getLocationStatistics.getFailureMessage(), getLocationStatistics.getFailureException());
+
+      }
+
+
+    } finally {
+      updateServerStatisticsButton.setEnabled(true);
+    }
+  }
 
 }

@@ -18,7 +18,7 @@
     <TextView
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="@string/postnummer_hint"/>
+      android:text="@string/postnummer_header"/>
 
 
     <EditText
@@ -40,7 +40,27 @@
     <TextView
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
-      android:text="@string/debug_hint"/>
+      android:text="@string/location_header"/>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/timestamp"/>
+
+      <TextView
+        android:id="@+id/location_timestamp"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
 
 
 
@@ -63,6 +83,7 @@
 
     </LinearLayout>
 
+
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -76,7 +97,7 @@
         android:text="@string/altitude"/>
 
       <TextView
-        android:id="@+id/altitude"
+        android:id="@+id/location_altitude"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/not_applicable"/>
@@ -96,7 +117,7 @@
         android:text="@string/accuracy"/>
 
       <TextView
-        android:id="@+id/accuracy"
+        android:id="@+id/location_accuracy"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/not_applicable"/>
@@ -115,7 +136,7 @@
         android:text="@string/latitude"/>
 
       <TextView
-        android:id="@+id/latitude"
+        android:id="@+id/location_latitude"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/not_applicable"/>
@@ -134,13 +155,106 @@
 
 
       <TextView
-        android:id="@+id/longitude"
+        android:id="@+id/location_longitude"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="@string/not_applicable"/>
 
     </LinearLayout>
 
+
+    <View
+      android:layout_width="fill_parent"
+      android:layout_height="16dp"/>
+
+    <TextView
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/system_info_header"/>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_number_of_accounts"/>
+
+      <TextView
+        android:id="@+id/server_number_of_accounts"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_number_of_location_samples"/>
+
+      <TextView
+        android:id="@+id/server_number_of_location_samples"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_number_of_location_samples_100_meters"/>
+
+      <TextView
+        android:id="@+id/server_number_of_location_samples_100_meters"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_number_of_location_samples_500_meters"/>
+
+      <TextView
+        android:id="@+id/server_number_of_location_samples_500_meters"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+    <Button
+      android:id="@+id/update_server_statistics"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:text="@string/update_server_statitics"/>
 
 
 
