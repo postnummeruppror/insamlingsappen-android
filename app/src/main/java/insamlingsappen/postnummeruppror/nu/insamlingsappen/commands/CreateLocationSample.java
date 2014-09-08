@@ -11,6 +11,7 @@ public class CreateLocationSample extends PostJsonToServerCommand {
   private String accountIdentity;
 
   private String application;
+  private String applicationVersion;
 
   private String provider;
   private Double longitude;
@@ -38,6 +39,7 @@ public class CreateLocationSample extends PostJsonToServerCommand {
     json.put("accountIdentity", accountIdentity);
 
     json.put("application", application);
+    json.put("applicationVersion", applicationVersion);
 
     json.put("latitude", latitude);
     json.put("longitude", longitude);
@@ -138,5 +140,13 @@ public class CreateLocationSample extends PostJsonToServerCommand {
 
   public void setApplication(String application) {
     this.application = application;
+  }
+
+  public String getApplicationVersion() {
+    return applicationVersion;
+  }
+
+  public void setApplicationVersion(String applicationVersion) {
+    this.applicationVersion = applicationVersion;
   }
 }

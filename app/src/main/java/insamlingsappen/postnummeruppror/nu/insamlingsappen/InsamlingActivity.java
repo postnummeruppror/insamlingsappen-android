@@ -105,7 +105,8 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
           createLocationSample.setHttpClient(httpClient);
           createLocationSample.setServerHostname(Application.serverHostname);
 
-          createLocationSample.setApplication("android/" + Application.version);
+          createLocationSample.setApplication(Application.application);
+          createLocationSample.setApplicationVersion(Application.version);
 
           createLocationSample.setAccountIdentity(accountIdentity);
 
