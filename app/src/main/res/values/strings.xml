@@ -5,13 +5,16 @@
 
   <string name="action_settings">Inställningar</string>
 
-  <string name="postnummer_hint">Postnummer</string>
-  <string name="longitude">Longitud</string>
-  <string name="latitude">Latitud</string>
-  <string name="accuracy">Precision</string>
-  <string name="altitude">Höjd över havet</string>
-  <string name="provider">Datakälla</string>
-  <string name="send_postnummer_hint">Skicka postnummer</string>
-  <string name="send_postnummer">Skicka postnummer</string>
+  <string name="provider">Datakälla:</string>
+  <string name="altitude">Höjd över havet:</string>
+  <string name="accuracy">Felmarginal:</string>
+  <string name="latitude">Latitud:</string>
+  <string name="longitude">Longitud:</string>
+
+  <string name="postnummer_hint">Postnummret där du befinner dig nu:</string>
+
+  <string name="send_postnummer">Registrera postnummer</string>
+  <string name="not_applicable">N/A</string>
+  <string name="debug_hint">Information om din nuvarande position:</string>
 
 </resources>
