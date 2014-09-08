@@ -18,7 +18,7 @@ public class SetAccount extends PostJsonToServerCommand {
 
   private String identity;
   private String emailAddress;
-
+  private Boolean acceptingCcZero;
 
   public SetAccount() {
   }
@@ -32,6 +32,7 @@ public class SetAccount extends PostJsonToServerCommand {
   protected void assembleRequestJson(JSONObject json) throws JSONException {
     json.put("identity", identity);
     json.put("emailAddress", emailAddress);
+    json.put("acceptingCcZero", acceptingCcZero);
   }
 
   public String getIdentity() {
@@ -50,4 +51,11 @@ public class SetAccount extends PostJsonToServerCommand {
     this.emailAddress = emailAddress;
   }
 
+  public Boolean getAcceptingCcZero() {
+    return acceptingCcZero;
+  }
+
+  public void setAcceptingCcZero(Boolean acceptingCcZero) {
+    this.acceptingCcZero = acceptingCcZero;
+  }
 }

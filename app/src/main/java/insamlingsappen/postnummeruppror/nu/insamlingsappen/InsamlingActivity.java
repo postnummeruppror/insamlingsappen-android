@@ -13,11 +13,13 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.LinkMovementMethod;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,36 +33,47 @@ import java.util.UUID;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.CreateLocationSample;
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetLocationStatistics;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.SetAccount;
 
 
 public class InsamlingActivity extends ActionBarActivity implements LocationListener {
 
-  private HttpClient httpClient;
+  private HttpClient httpClient = new DefaultHttpClient();
+  ;
 
-  private String accountIdentity;
+  private Account account;
   private Location currentLocation;
 
-  private TextView timestampTextView;
-  private TextView latitudeTextView;
-  private TextView longitudeTextView;
-  private TextView accuracyTextView;
-  private TextView altitudeTextView;
-  private TextView providerTextView;
+  private View location_fix_view;
+  private View content_view;
+  private View account_setup_view;
 
-  private EditText postalCodeEditText;
-  private Button sendPostalCodeButton;
+  private TextView location_timestampTextView;
+  private TextView location_latitudeTextView;
+  private TextView location_longitudeTextView;
+  private TextView location_accuracyTextView;
+  private TextView location_altitudeTextView;
+  private TextView location_providerTextView;
 
-  private Button updateServerStatisticsButton;
+  private EditText location_postalCodeEditText;
+  private Button location_submitPostalCodeButton;
 
-  private TextView numberOfAccountsTextView;
-  private TextView numberOfLocationSamplesTextView;
+  private Button server_statistics_refreshButton;
 
+  private TextView server_statistics_numberOfAccountsTextView;
+  private TextView server_statistics_numberOfLocationSamplesTextView;
+
+  private EditText account_setup_emailAddressEditText;
+  private CheckBox account_setup_ccZeroCheckBox;
+  private Button account_setup_submitAccount;
 
   private LocationManager locationManager;
   private String provider;
 
-  private SharedPreferences sharedPref;
+  private SharedPreferences accountPreferences;
 
+  private long maximumMillisecondsAgeOfLocationFix = 10 * 1000; // 10 seconds
+  private AssertGoodLocationFixRunnable assertGoodLocationFixRunnable = new AssertGoodLocationFixRunnable();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -72,95 +85,108 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
       StrictMode.setThreadPolicy(policy);
     }
 
-    httpClient = new DefaultHttpClient();
 
+    accountPreferences = getSharedPreferences("account", Context.MODE_PRIVATE);
 
-    sharedPref = getSharedPreferences("account", Context.MODE_PRIVATE);
-
-    // assert that we have an account identity
-
-    accountIdentity = sharedPref.getString("account.identity", null);
-    if (accountIdentity == null) {
-      accountIdentity = UUID.randomUUID().toString();
-      SharedPreferences.Editor editor = sharedPref.edit();
-      editor.putString("account.identity", accountIdentity);
-      editor.commit();
-
-    }
+//    // todo debug remove! makes sure the UI really works by showing account settings first!
+//    SharedPreferences.Editor editor = accountPreferences.edit();
+//    editor.putString("account.identity", null);
+//    editor.commit();
+//
 
     setContentView(R.layout.activity_insamling);
 
-    timestampTextView = (TextView) findViewById(R.id.location_timestamp);
-    latitudeTextView = (TextView) findViewById(R.id.location_latitude);
-    longitudeTextView = (TextView) findViewById(R.id.location_longitude);
-    accuracyTextView = (TextView) findViewById(R.id.location_accuracy);
-    altitudeTextView = (TextView) findViewById(R.id.location_altitude);
-    providerTextView = (TextView) findViewById(R.id.provider);
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     */
 
 
-    postalCodeEditText = (EditText) findViewById(R.id.postal_code);
-    sendPostalCodeButton = (Button) findViewById(R.id.submit_postal_code);
+    // Define views.
 
-    sendPostalCodeButton.setOnClickListener(new View.OnClickListener() {
+    location_fix_view = findViewById(R.id.location_fix);
+    content_view = findViewById(R.id.content);
+    account_setup_view = findViewById(R.id.account_setup);
+
+    // Hide all views.
+    // What we display depends on logic further in to the application.
+
+    location_fix_view.setVisibility(View.GONE);
+    account_setup_view.setVisibility(View.GONE);
+    content_view.setVisibility(View.GONE);
+
+
+    // Define all widgets the application touch.
+
+    account_setup_ccZeroCheckBox = (CheckBox) findViewById(R.id.account_setup_cc_zero);
+    account_setup_emailAddressEditText = (EditText) findViewById(R.id.account_setup_email_address);
+    account_setup_submitAccount = (Button) findViewById(R.id.account_setup_submit_account);
+
+
+    // make cc0-link clickable
+    account_setup_emailAddressEditText.setMovementMethod(LinkMovementMethod.getInstance());
+
+    account_setup_submitAccount.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (currentLocation.getTime() < System.currentTimeMillis() - (1000 * 30)) {
-          Toast.makeText(InsamlingActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
 
-        } else  if (currentLocation == null) {
-          Toast.makeText(InsamlingActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+        if (!account_setup_ccZeroCheckBox.isChecked()) {
+          Toast.makeText(InsamlingActivity.this, "Du måste godkänna CC0 för att fortsätta!", Toast.LENGTH_LONG).show();
+          return;
+        }
 
-        } else {
-          // todo are you sure? please check postal code before submitting
-
-
-          CreateLocationSample createLocationSample = new CreateLocationSample();
-
-          createLocationSample.setHttpClient(httpClient);
-          createLocationSample.setServerHostname(Application.serverHostname);
-
-          createLocationSample.setApplication(Application.application);
-          createLocationSample.setApplicationVersion(Application.version);
-
-          createLocationSample.setAccountIdentity(accountIdentity);
-
-          createLocationSample.setPostalCode(postalCodeEditText.getText().toString());
-//          sendLocationSample.setPostalTown();
-//          sendLocationSample.setStreetName();
-//          sendLocationSample.setHouseNumber();
-
-          createLocationSample.setLatitude(currentLocation.getLatitude());
-          createLocationSample.setLongitude(currentLocation.getLongitude());
-          createLocationSample.setAccuracy((double) currentLocation.getAccuracy());
-          createLocationSample.setProvider(currentLocation.getProvider());
-          createLocationSample.setAltitude(currentLocation.getAltitude());
-
-          createLocationSample.run();
-          if (createLocationSample.getSuccess()) {
-            Toast.makeText(InsamlingActivity.this, "Rapporten mottagen av server!", Toast.LENGTH_SHORT).show();
-            postalCodeEditText.setText(null);
-
-          } else {
-            Toast.makeText(InsamlingActivity.this, createLocationSample.getFailureMessage(), Toast.LENGTH_SHORT).show();
-            Log.e("SendLocationSample", createLocationSample.getFailureMessage(), createLocationSample.getFailureException());
-
+        if (createAccount()) {
+          account_setup_view.setVisibility(View.GONE);
+          if (assertGoodLocationFixRunnable.stop) {
+            new Thread(assertGoodLocationFixRunnable).start();
           }
         }
       }
     });
 
-    updateServerStatisticsButton = (Button) findViewById(R.id.update_server_statistics);
-    numberOfAccountsTextView = (TextView) findViewById(R.id.server_number_of_accounts);
-    numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_number_of_location_samples);
 
-    updateServerStatistics();
+    location_timestampTextView = (TextView) findViewById(R.id.location_timestamp);
+    location_latitudeTextView = (TextView) findViewById(R.id.location_latitude);
+    location_longitudeTextView = (TextView) findViewById(R.id.location_longitude);
+    location_accuracyTextView = (TextView) findViewById(R.id.location_accuracy);
+    location_altitudeTextView = (TextView) findViewById(R.id.location_altitude);
+    location_providerTextView = (TextView) findViewById(R.id.provider);
 
-    updateServerStatisticsButton.setOnClickListener(new View.OnClickListener() {
+    location_postalCodeEditText = (EditText) findViewById(R.id.location_postal_code);
+    location_submitPostalCodeButton = (Button) findViewById(R.id.submit_location_sample);
+
+    location_submitPostalCodeButton.setOnClickListener(new View.OnClickListener() {
+      @Override
+      public void onClick(View view) {
+        sendLocationSample();
+      }
+    });
+
+    server_statistics_refreshButton = (Button) findViewById(R.id.server_statistics_refresh);
+    server_statistics_numberOfAccountsTextView = (TextView) findViewById(R.id.server_statistics_number_of_accounts);
+    server_statistics_numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_statistics_number_of_location_samples);
+
+    server_statistics_refreshButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         updateServerStatistics();
       }
     });
+
+
+    /*
+     *
+     *
+     *
+     *
+     *
+     *
+     */
+
 
     // Get the location manager
     locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -179,10 +205,34 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
     if (location != null) {
       onLocationChanged(location);
     }
+
+
+    // Account
+    account = loadAccount();
+    if (account == null) {
+      account_setup_view.setVisibility(View.VISIBLE);
+    }
+
+  }
+
+  /**
+   * onResume is executed after onCreate AND when returning to the application.
+   */
+  @Override
+  protected void onResume() {
+    super.onResume();
+
+    new Thread(assertGoodLocationFixRunnable).start();
+
+    currentLocation = null;
     locationManager.requestLocationUpdates(provider, 0, 0, this);
+  }
 
-
-
+  @Override
+  protected void onPause() {
+    super.onPause();
+    assertGoodLocationFixRunnable.stop = true;
+    locationManager.removeUpdates(this);
   }
 
 
@@ -205,31 +255,24 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
     return super.onOptionsItemSelected(item);
   }
 
-  /* Request updates at startup */
-  @Override
-  protected void onResume() {
-    super.onResume();
-    locationManager.requestLocationUpdates(provider, 0, 0, this);
-  }
-
-  /* Remove the locationlistener updates when Activity is paused */
-  @Override
-  protected void onPause() {
-    super.onPause();
-    locationManager.removeUpdates(this);
-  }
 
   @Override
   public void onLocationChanged(Location location) {
 
+    boolean updateStatistics = currentLocation == null;
+
     currentLocation = location;
 
-    timestampTextView.setText(String.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(location.getTime()))));
-    latitudeTextView.setText(String.valueOf(location.getLatitude()));
-    longitudeTextView.setText(String.valueOf(location.getLongitude()));
-    accuracyTextView.setText(String.valueOf(location.getAccuracy()));
-    altitudeTextView.setText(String.valueOf(location.getAltitude()));
-    providerTextView.setText(String.valueOf(location.getProvider()));
+    location_timestampTextView.setText(String.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(location.getTime()))));
+    location_latitudeTextView.setText(String.valueOf(location.getLatitude()));
+    location_longitudeTextView.setText(String.valueOf(location.getLongitude()));
+    location_accuracyTextView.setText(String.valueOf(location.getAccuracy()));
+    location_altitudeTextView.setText(String.valueOf(location.getAltitude()));
+    location_providerTextView.setText(String.valueOf(location.getProvider()));
+
+    if (updateStatistics) {
+      updateServerStatistics();
+    }
 
   }
 
@@ -287,7 +330,13 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
 
 
   public void updateServerStatistics() {
-    updateServerStatisticsButton.setEnabled(false);
+
+    if (currentLocation == null) {
+      Toast.makeText(this, "Ingen position ännu! Statistikanropet avbrutet.", Toast.LENGTH_LONG);
+      return;
+    }
+
+    server_statistics_refreshButton.setEnabled(false);
     try {
 
       GetLocationStatistics getLocationStatistics = new GetLocationStatistics();
@@ -298,8 +347,8 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
       getLocationStatistics.run();
       if (getLocationStatistics.getSuccess()) {
 
-        numberOfAccountsTextView.setText(String.valueOf(getLocationStatistics.getNumberOfAccounts()));
-        numberOfLocationSamplesTextView.setText(String.valueOf(getLocationStatistics.getNumberOfLocationSamples()));
+        server_statistics_numberOfAccountsTextView.setText(String.valueOf(getLocationStatistics.getNumberOfAccounts()));
+        server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getLocationStatistics.getNumberOfLocationSamples()));
 
       } else {
         Toast.makeText(InsamlingActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
@@ -309,8 +358,155 @@ public class InsamlingActivity extends ActionBarActivity implements LocationList
 
 
     } finally {
-      updateServerStatisticsButton.setEnabled(true);
+      server_statistics_refreshButton.setEnabled(true);
     }
+  }
+
+  private void sendLocationSample() {
+
+    if (currentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+      // This is a secondary check. might not be needed as we have a thread that check for location fix!
+      // Better safe than sorry though!
+      Toast.makeText(InsamlingActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+
+    } else if (currentLocation == null) {
+      Toast.makeText(InsamlingActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+
+    } else {
+      // todo are you sure? please check postal code before submitting
+
+
+      CreateLocationSample createLocationSample = new CreateLocationSample();
+
+      createLocationSample.setHttpClient(httpClient);
+      createLocationSample.setServerHostname(Application.serverHostname);
+
+      createLocationSample.setApplication(Application.application);
+      createLocationSample.setApplicationVersion(Application.version);
+
+      createLocationSample.setAccountIdentity(account.getIdentity());
+
+      createLocationSample.setPostalCode(location_postalCodeEditText.getText().toString());
+//          sendLocationSample.setPostalTown();
+//          sendLocationSample.setStreetName();
+//          sendLocationSample.setHouseNumber();
+
+      createLocationSample.setLatitude(currentLocation.getLatitude());
+      createLocationSample.setLongitude(currentLocation.getLongitude());
+      createLocationSample.setAccuracy((double) currentLocation.getAccuracy());
+      createLocationSample.setProvider(currentLocation.getProvider());
+      createLocationSample.setAltitude(currentLocation.getAltitude());
+
+      createLocationSample.run();
+      if (createLocationSample.getSuccess()) {
+        Toast.makeText(InsamlingActivity.this, "Rapporten mottagen av server!", Toast.LENGTH_SHORT).show();
+        location_postalCodeEditText.setText(null);
+
+      } else {
+        Toast.makeText(InsamlingActivity.this, createLocationSample.getFailureMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("SendLocationSample", createLocationSample.getFailureMessage(), createLocationSample.getFailureException());
+
+      }
+    }
+  }
+
+  private class AssertGoodLocationFixRunnable implements Runnable {
+    private boolean stop = true;
+
+    @Override
+    public void run() {
+      stop = false;
+      try {
+
+        while (!stop) {
+          // Can't touch views from anything but the UI-thread!
+          runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+              // Don't wait for location fix if we're setting up the account!
+              if (account_setup_view.getVisibility() != View.VISIBLE) {
+                if (currentLocation != null
+                    && currentLocation.getTime() > System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+                  location_fix_view.setVisibility(View.GONE);
+                  content_view.setVisibility(View.VISIBLE);
+                } else {
+                  location_fix_view.setVisibility(View.VISIBLE);
+                  content_view.setVisibility(View.GONE);
+                }
+              }
+
+            }
+          });
+
+          try {
+            Thread.sleep(1000);
+          } catch (InterruptedException ie) {
+            Log.e("AssertGoodLocationFixRunnable", "Caught interruption", ie);
+          }
+        }
+
+      } finally {
+        Log.i("AssertGoodLocationFixRunnable", "stopping");
+        stop = true;
+      }
+    }
+
+  }
+
+  private Account loadAccount() {
+    Account account = null;
+    String identity = accountPreferences.getString("account.identity", null);
+    if (identity != null) {
+      account = new Account();
+      account.setIdentity(identity);
+      account.setEmailAddress(accountPreferences.getString("account.emailAddress", null));
+    }
+    return account;
+  }
+
+  private boolean createAccount() {
+
+    // todo assert identity and email is set!
+
+    Account account = new Account();
+    account.setIdentity(UUID.randomUUID().toString());
+    account.setEmailAddress(account_setup_emailAddressEditText.getText().toString());
+    account.setAcceptingCcZero(account_setup_ccZeroCheckBox.isChecked());
+
+    SetAccount setAccount = new SetAccount();
+
+    setAccount.setServerHostname(Application.serverHostname);
+    setAccount.setHttpClient(httpClient);
+
+    setAccount.setIdentity(account.getIdentity());
+    setAccount.setEmailAddress(account.getEmailAddress());
+    setAccount.setAcceptingCcZero(account.isAcceptingCcZero());
+
+    setAccount.run();
+
+    if (setAccount.getSuccess()) {
+
+      SharedPreferences.Editor editor = accountPreferences.edit();
+      editor.putString("account.identity", account.getIdentity());
+      editor.putString("account.emailAddress", account.getEmailAddress());
+      editor.putBoolean("account.acceptingCcZero", account.isAcceptingCcZero());
+      editor.apply();
+
+      this.account = account;
+
+      Toast.makeText(this, "Kontodetaljer registrerade.", Toast.LENGTH_LONG);
+      return true;
+
+    } else {
+
+      Toast.makeText(InsamlingActivity.this, setAccount.getFailureMessage(), Toast.LENGTH_SHORT).show();
+      Log.e("GetLocationStatistics", setAccount.getFailureMessage(), setAccount.getFailureException());
+      return false;
+
+    }
+
+
   }
 
 }
