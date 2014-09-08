@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Insamlingsappen</string>
+  <string name="app_name">Insamlingsappen</string>
 
-    <string name="action_settings">Inställningar</string>
+  <string name="action_settings">Inställningar</string>
 
-    <string name="postnummer_hint">Postnummer</string>
-    <string name="longitude">Longitud</string>
-    <string name="latitude">Latitud</string>
-    <string name="accuracy">Precision</string>
-    <string name="altitude">Höjd över havet</string>
-    <string name="provider">Datakälla</string>
-    <string name="send_postnummer_hint">Skicka postnummer</string>
-    <string name="send_postnummer">Skicka postnummer</string>
+  <string name="postnummer_hint">Postnummer</string>
+  <string name="longitude">Longitud</string>
+  <string name="latitude">Latitud</string>
+  <string name="accuracy">Precision</string>
+  <string name="altitude">Höjd över havet</string>
+  <string name="provider">Datakälla</string>
+  <string name="send_postnummer_hint">Skicka postnummer</string>
+  <string name="send_postnummer">Skicka postnummer</string>
 
 </resources>
