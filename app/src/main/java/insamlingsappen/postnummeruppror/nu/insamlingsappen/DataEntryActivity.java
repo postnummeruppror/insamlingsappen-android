@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -48,6 +49,10 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   private TextView location_providerTextView;
 
   private EditText location_postalCodeEditText;
+  private AutoCompleteTextView location_postalTownAutoCompleteTextView;
+  private AutoCompleteTextView location_streetNameAutoCompleteTextView;
+  private EditText location_houseNumberEditText;
+
   private Button location_submitPostalCodeButton;
 
 
@@ -97,12 +102,21 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     location_providerTextView = (TextView) findViewById(R.id.provider);
 
     location_postalCodeEditText = (EditText) findViewById(R.id.location_postal_code);
+    location_postalTownAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.location_postal_town);
+    location_streetNameAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.location_street_name);
+    location_houseNumberEditText = (EditText) findViewById(R.id.location_house_number);
+
     location_submitPostalCodeButton = (Button) findViewById(R.id.submit_location_sample);
 
     location_submitPostalCodeButton.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        sendLocationSample();
+        if (sendLocationSample()) {
+          location_postalCodeEditText.setText(null);
+          location_postalTownAutoCompleteTextView.setText(null);
+          location_streetNameAutoCompleteTextView.setText(null);
+          location_houseNumberEditText.setText(null);
+        }
       }
     });
 
@@ -120,11 +134,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     locationService = new CompoundLocationService(this);
     locationService.setMaximumMillisecondsAgeOfGpsLocation(maximumMillisecondsAgeOfLocationFix);
-    locationService.requestLocationUpdates(this);
+    locationService.start();
+
 
     // make sure an account is created and registered.
     assertRegisteredAccount();
-
 
 
   }
@@ -141,9 +155,12 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       showSettingsAlert();
     }
 
-    locationService.start();
+    locationService.requestLocationUpdates(this);
 
-    mostRecentLocation = null;
+    Location mostRecentLocation = locationService.getMostRecentLocation();
+    if (mostRecentLocation != null) {
+      onLocationChanged(mostRecentLocation);
+    }
     displayWaitingForLocationFix();
 
     new Thread(assertGoodLocationFixRunnable).start();
@@ -270,7 +287,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   }
 
 
-  private void sendLocationSample() {
+  private boolean sendLocationSample() {
 
     Account account = Account.load(this);
 
@@ -278,9 +295,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       // This is a secondary check. might not be needed as we have a thread that check for location fix!
       // Better safe than sorry though!
       Toast.makeText(DataEntryActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+      return false;
 
     } else if (mostRecentLocation == null) {
       Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+      return false;
 
     } else {
       // todo are you sure? please check postal code before submitting
@@ -297,9 +316,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       createLocationSample.setAccountIdentity(account.getIdentity());
 
       createLocationSample.setPostalCode(location_postalCodeEditText.getText().toString());
-//          sendLocationSample.setPostalTown();
-//          sendLocationSample.setStreetName();
-//          sendLocationSample.setHouseNumber();
+      createLocationSample.setPostalTown(location_postalTownAutoCompleteTextView.getText().toString());
+      createLocationSample.setStreetName(location_streetNameAutoCompleteTextView.getText().toString());
+      createLocationSample.setHouseNumber(location_houseNumberEditText.getText().toString());
 
       createLocationSample.setLatitude(mostRecentLocation.getLatitude());
       createLocationSample.setLongitude(mostRecentLocation.getLongitude());
@@ -310,12 +329,12 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       createLocationSample.run();
       if (createLocationSample.getSuccess()) {
         Toast.makeText(DataEntryActivity.this, "Rapporten mottagen av server!", Toast.LENGTH_SHORT).show();
-        location_postalCodeEditText.setText(null);
+        return true;
 
       } else {
         Toast.makeText(DataEntryActivity.this, createLocationSample.getFailureMessage(), Toast.LENGTH_SHORT).show();
         Log.e("SendLocationSample", createLocationSample.getFailureMessage(), createLocationSample.getFailureException());
-
+        return false;
       }
     }
   }
@@ -376,8 +395,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     }
 
   }
-
-
 
 
 }

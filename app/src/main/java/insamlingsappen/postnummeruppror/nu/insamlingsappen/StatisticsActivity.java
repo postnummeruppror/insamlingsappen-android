@@ -25,6 +25,8 @@ public class StatisticsActivity extends ActionBarActivity {
 
   private TextView server_statistics_numberOfAccountsTextView;
   private TextView server_statistics_numberOfLocationSamplesTextView;
+  private TextView server_statistics_numberOfPostalCodesTextView;
+  private TextView server_statistics_numberOfPostalTownsTextView;
 
   private TextView server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView;
   private TextView server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView;
@@ -38,8 +40,11 @@ public class StatisticsActivity extends ActionBarActivity {
     setContentView(R.layout.activity_statistics);
 
     server_statistics_refreshButton = (Button) findViewById(R.id.server_statistics_refresh);
+
     server_statistics_numberOfAccountsTextView = (TextView) findViewById(R.id.server_statistics_number_of_accounts);
     server_statistics_numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_statistics_number_of_location_samples);
+    server_statistics_numberOfPostalTownsTextView = (TextView)findViewById(R.id.server_statistics_number_of_postal_towns);
+    server_statistics_numberOfPostalCodesTextView = (TextView)findViewById(R.id.server_statistics_number_of_postal_codes);
 
     server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_100_meters);
     server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_500_meters);
@@ -60,10 +65,15 @@ public class StatisticsActivity extends ActionBarActivity {
       }
     });
 
-    updateServerStatistics();
 
   }
 
+  @Override
+  protected void onPostResume() {
+    super.onPostResume();
+
+    updateServerStatistics();
+  }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -114,6 +124,8 @@ public class StatisticsActivity extends ActionBarActivity {
 
         server_statistics_numberOfAccountsTextView.setText(String.valueOf(getServerStatistics.getNumberOfAccounts()));
         server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getServerStatistics.getNumberOfLocationSamples()));
+        server_statistics_numberOfPostalCodesTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalCodes()));
+        server_statistics_numberOfPostalTownsTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalTowns()));
 
       } else {
         Toast.makeText(StatisticsActivity.this, getServerStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();

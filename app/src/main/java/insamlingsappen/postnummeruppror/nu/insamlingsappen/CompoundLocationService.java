@@ -25,7 +25,10 @@ public class CompoundLocationService {
   private Location mostRecentGpsLocation;
   private Location mostRecentNetworkLocation;
 
+  private Location mostRecentLocation;
+
   private void publishLocationChanged(Location location) {
+    mostRecentLocation = location;
     for (LocationListener listener : listeners) {
       listener.onLocationChanged(location);
     }
@@ -110,6 +113,10 @@ public class CompoundLocationService {
 
   public void setMaximumMillisecondsAgeOfGpsLocation(long maximumMillisecondsAgeOfGpsLocation) {
     this.maximumMillisecondsAgeOfGpsLocation = maximumMillisecondsAgeOfGpsLocation;
+  }
+
+  public Location getMostRecentLocation() {
+    return mostRecentLocation;
   }
 }
 

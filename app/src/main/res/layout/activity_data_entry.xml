@@ -23,15 +23,61 @@
       android:visibility="visible"
       >
 
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/data_entry_header"/>
+
+      <View
+        android:layout_width="fill_parent"
+        android:layout_height="16dp"/>
+
 
       <TextView
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/postnummer_header"/>
+        android:text="@string/postal_code_header"/>
 
 
       <EditText
         android:id="@+id/location_postal_code"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="number"/>
+
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/postal_town_header"/>
+
+
+      <AutoCompleteTextView
+        android:id="@+id/location_postal_town"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textAutoComplete|textCapSentences"/>
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/street_name_header"/>
+
+
+      <AutoCompleteTextView
+        android:id="@+id/location_street_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:inputType="textAutoComplete|textCapSentences"/>
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/house_number_header"/>
+
+
+      <EditText
+        android:id="@+id/location_house_number"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="number"/>
@@ -77,140 +123,151 @@
     </LinearLayout>
 
 
-    <LinearLayout
-      android:id="@+id/fixed_location_view"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:visibility="visible">
+    <!-- fixed location -->
 
 
-      <TextView
+    <ScrollView
+      android:layout_width="match_parent"
+      android:layout_height="wrap_content">
+
+
+      <LinearLayout
+        android:id="@+id/fixed_location_view"
+        xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/location_header"/>
+        android:orientation="vertical"
+        android:visibility="visible">
 
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
 
         <TextView
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/timestamp"/>
+          android:text="@string/location_header"/>
 
-        <TextView
-          android:id="@+id/location_timestamp"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/timestamp"/>
+
+          <TextView
+            android:id="@+id/location_timestamp"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/provider"/>
+
+          <TextView
+            android:id="@+id/provider"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+
+        </LinearLayout>
+
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/altitude"/>
+
+          <TextView
+            android:id="@+id/location_altitude"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/accuracy"/>
+
+          <TextView
+            android:id="@+id/location_accuracy"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/latitude"/>
+
+          <TextView
+            android:id="@+id/location_latitude"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+        </LinearLayout>
+
+        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                      android:layout_width="wrap_content"
+                      android:layout_height="wrap_content"
+                      android:orientation="horizontal">
+
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/longitude"/>
+
+
+          <TextView
+            android:id="@+id/location_longitude"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/not_applicable"/>
+
+        </LinearLayout>
 
       </LinearLayout>
 
+    </ScrollView>
 
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/provider"/>
-
-        <TextView
-          android:id="@+id/provider"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/altitude"/>
-
-        <TextView
-          android:id="@+id/location_altitude"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/accuracy"/>
-
-        <TextView
-          android:id="@+id/location_accuracy"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-      </LinearLayout>
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/latitude"/>
-
-        <TextView
-          android:id="@+id/location_latitude"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-      </LinearLayout>
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/longitude"/>
-
-
-        <TextView
-          android:id="@+id/location_longitude"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-    </LinearLayout>
 
   </LinearLayout>
 

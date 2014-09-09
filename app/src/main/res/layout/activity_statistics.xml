@@ -14,16 +14,6 @@
     android:orientation="vertical"
     android:visibility="visible">
 
-    <TextView
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:text="@string/system_info_header"/>
-
-    <View
-      android:layout_width="fill_parent"
-      android:layout_height="16dp"/>
-
-
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
@@ -43,6 +33,50 @@
 
     </LinearLayout>
 
+
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_statistics_number_of_postal_codes"/>
+
+      <TextView
+        android:id="@+id/server_statistics_number_of_postal_codes"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                  android:layout_width="wrap_content"
+                  android:layout_height="wrap_content"
+                  android:orientation="horizontal">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="16dp"
+        android:text="@string/server_statistics_number_of_postal_towns"/>
+
+      <TextView
+        android:id="@+id/server_statistics_number_of_postal_towns"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/not_applicable"/>
+
+    </LinearLayout>
+
+
+
+
+    <!-- antal rapporter -->
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="wrap_content"
