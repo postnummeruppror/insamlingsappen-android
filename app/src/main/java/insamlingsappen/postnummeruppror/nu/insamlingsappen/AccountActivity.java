@@ -21,9 +21,11 @@ import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.SetAccount;
 
 public class AccountActivity extends ActionBarActivity {
 
-  private EditText account_setup_emailAddressEditText;
-  private CheckBox account_setup_ccZeroCheckBox;
-  private Button account_setup_submitAccount;
+  private EditText firstName;
+  private EditText lastName;
+  private EditText emailAddress;
+  private CheckBox acceptingCcZero;
+  private Button submit;
 
 
   @Override
@@ -31,21 +33,23 @@ public class AccountActivity extends ActionBarActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_account);
 
-    account_setup_ccZeroCheckBox = (CheckBox) findViewById(R.id.account_setup_cc_zero);
-    account_setup_emailAddressEditText = (EditText) findViewById(R.id.account_setup_email_address);
-    account_setup_submitAccount = (Button) findViewById(R.id.account_setup_submit_account);
+    acceptingCcZero = (CheckBox) findViewById(R.id.account_setup_cc_zero);
+    emailAddress = (EditText) findViewById(R.id.account_setup_email_address);
+    firstName = (EditText) findViewById(R.id.account_setup_fist_name);
+    lastName = (EditText) findViewById(R.id.account_setup_last_name);
+    submit = (Button) findViewById(R.id.account_setup_submit_account);
 
 
     // make cc0-link clickable
-    account_setup_emailAddressEditText.setMovementMethod(LinkMovementMethod.getInstance());
+    emailAddress.setMovementMethod(LinkMovementMethod.getInstance());
 
     Account account = Account.load(this);
     if (account != null) {
-      account_setup_ccZeroCheckBox.setChecked(account.isAcceptingCcZero());
-      account_setup_emailAddressEditText.setText(account.getEmailAddress());
+      acceptingCcZero.setChecked(account.isAcceptingCcZero());
+      emailAddress.setText(account.getEmailAddress());
     }
 
-    account_setup_submitAccount.setOnClickListener(new View.OnClickListener() {
+    submit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
 
@@ -58,8 +62,8 @@ public class AccountActivity extends ActionBarActivity {
           account.setIdentity(UUID.randomUUID().toString());
         }
 
-        account.setEmailAddress(account_setup_emailAddressEditText.getText().toString());
-        account.setAcceptingCcZero(account_setup_ccZeroCheckBox.isChecked());
+        account.setEmailAddress(emailAddress.getText().toString());
+        account.setAcceptingCcZero(acceptingCcZero.isChecked());
 
         SetAccount setAccount = new SetAccount();
 
@@ -67,6 +71,8 @@ public class AccountActivity extends ActionBarActivity {
         setAccount.setHttpClient(new DefaultHttpClient());
 
         setAccount.setIdentity(account.getIdentity());
+        setAccount.setFirstName(account.getFirstName());
+        setAccount.setLastName(account.getLastName());
         setAccount.setEmailAddress(account.getEmailAddress());
         setAccount.setAcceptingCcZero(account.isAcceptingCcZero());
 
