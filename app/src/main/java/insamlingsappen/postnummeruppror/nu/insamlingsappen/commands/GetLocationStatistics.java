@@ -13,8 +13,8 @@ public class GetLocationStatistics extends PostJsonToServerCommand {
 
   // response values
 
-  private Integer numberOfLocationSamples;
-  private Integer numberOfAccounts;
+  private Integer locationSamplesWithinOneHundredMetersRadius;
+  private Integer locationSamplesWithinFiveHundredMetersRadius;
 
   @Override
   protected String postUrlPathFactory() {
@@ -30,13 +30,8 @@ public class GetLocationStatistics extends PostJsonToServerCommand {
   @Override
   protected void processSuccessfulResponse(JSONObject json) throws JSONException {
 
-    JSONObject systemJson = json.getJSONObject("system");
-
-    numberOfAccounts = systemJson.getInt("numberOfAccounts");
-    numberOfLocationSamples = systemJson.getInt("numberOfLocationSamples");
-
-    // todo within 100 meters
-    // todo within 500 meters
+    locationSamplesWithinOneHundredMetersRadius = json.getInt("locationSamplesWithinOneHundredMetersRadius");
+    locationSamplesWithinFiveHundredMetersRadius = json.getInt("locationSamplesWithinFiveHundredMetersRadius");
 
   }
 
@@ -59,11 +54,11 @@ public class GetLocationStatistics extends PostJsonToServerCommand {
   // response values
 
 
-  public Integer getNumberOfLocationSamples() {
-    return numberOfLocationSamples;
+  public Integer getLocationSamplesWithinOneHundredMetersRadius() {
+    return locationSamplesWithinOneHundredMetersRadius;
   }
 
-  public Integer getNumberOfAccounts() {
-    return numberOfAccounts;
+  public Integer getLocationSamplesWithinFiveHundredMetersRadius() {
+    return locationSamplesWithinFiveHundredMetersRadius;
   }
 }

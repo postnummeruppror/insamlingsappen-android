@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -33,7 +32,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private static final int CREATE_ACCOUNT_REQUEST = 0;
 
-  private Location currentLocation;
+  private CompoundLocationService locationService;
+  private Location mostRecentLocation;
 
   private View waiting_for_location_fix_view;
   private View fixed_location_view;
@@ -51,11 +51,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   private Button location_submitPostalCodeButton;
 
 
-  private LocationManager locationManager;
-  private String provider;
-
-
-  private long maximumMillisecondsAgeOfLocationFix = 10 * 1000; // 10 seconds
+  private long maximumMillisecondsAgeOfLocationFix = 30 * 1000; // 30 seconds
   private AssertGoodLocationFixRunnable assertGoodLocationFixRunnable = new AssertGoodLocationFixRunnable();
 
   @Override
@@ -122,35 +118,13 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
      */
 
 
-    // Get the location manager
-    locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-
-    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-      showSettingsAlert();
-    }
-
-    Criteria criteria = new Criteria();
-    criteria.setAccuracy(Criteria.ACCURACY_FINE);
-
-    provider = locationManager.getBestProvider(criteria, true);
-    Location location = locationManager.getLastKnownLocation(provider);
-
-    // Initialize the location fields
-    if (location != null) {
-      onLocationChanged(location);
-    }
-
-    /*
-     *
-     *
-     *
-     *
-     *
-     *
-     */
+    locationService = new CompoundLocationService(this);
+    locationService.setMaximumMillisecondsAgeOfGpsLocation(maximumMillisecondsAgeOfLocationFix);
+    locationService.requestLocationUpdates(this);
 
     // make sure an account is created and registered.
     assertRegisteredAccount();
+
 
 
   }
@@ -162,27 +136,31 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   protected void onResume() {
     super.onResume();
 
-    currentLocation = null;
+    LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+    if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+      showSettingsAlert();
+    }
+
+    locationService.start();
+
+    mostRecentLocation = null;
     displayWaitingForLocationFix();
 
     new Thread(assertGoodLocationFixRunnable).start();
-
-    locationManager.requestLocationUpdates(provider, 0, 0, this);
-
 
   }
 
   @Override
   protected void onPause() {
     super.onPause();
-    locationManager.removeUpdates(this);
+    locationService.stop();
     assertGoodLocationFixRunnable.stop = true;
   }
 
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
     // Inflate the menu; this adds items to the action bar if it is present.
-    getMenuInflater().inflate(R.menu.insamling, menu);
+    getMenuInflater().inflate(R.menu.data_entry, menu);
     return true;
   }
 
@@ -196,9 +174,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
         break;
       case R.id.action_statistics:
         Intent intent = new Intent(this, StatisticsActivity.class);
-        if (currentLocation != null) {
-          intent.putExtra(StatisticsActivity.intent_extra_latitude, currentLocation.getLatitude());
-          intent.putExtra(StatisticsActivity.intent_extra_longitude, currentLocation.getLongitude());
+        if (mostRecentLocation != null) {
+          intent.putExtra(StatisticsActivity.intent_extra_latitude, mostRecentLocation.getLatitude());
+          intent.putExtra(StatisticsActivity.intent_extra_longitude, mostRecentLocation.getLongitude());
         }
         startActivity(intent);
         break;
@@ -213,7 +191,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   @Override
   public void onLocationChanged(Location location) {
 
-    currentLocation = location;
+    mostRecentLocation = location;
 
     location_timestampTextView.setText(String.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(location.getTime()))));
     location_latitudeTextView.setText(String.valueOf(location.getLatitude()));
@@ -226,18 +204,15 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   @Override
   public void onStatusChanged(String provider, int status, Bundle extras) {
-
   }
 
   @Override
   public void onProviderEnabled(String provider) {
-    Toast.makeText(this, "Påslagen positionskälla " + provider, Toast.LENGTH_SHORT).show();
 
   }
 
   @Override
   public void onProviderDisabled(String provider) {
-    Toast.makeText(this, "Avstängd positionskälla " + provider, Toast.LENGTH_SHORT).show();
   }
 
   /**
@@ -293,12 +268,12 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     Account account = Account.load(this);
 
-    if (currentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+    if (mostRecentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
       // This is a secondary check. might not be needed as we have a thread that check for location fix!
       // Better safe than sorry though!
       Toast.makeText(DataEntryActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
 
-    } else if (currentLocation == null) {
+    } else if (mostRecentLocation == null) {
       Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
 
     } else {
@@ -320,11 +295,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 //          sendLocationSample.setStreetName();
 //          sendLocationSample.setHouseNumber();
 
-      createLocationSample.setLatitude(currentLocation.getLatitude());
-      createLocationSample.setLongitude(currentLocation.getLongitude());
-      createLocationSample.setAccuracy((double) currentLocation.getAccuracy());
-      createLocationSample.setProvider(currentLocation.getProvider());
-      createLocationSample.setAltitude(currentLocation.getAltitude());
+      createLocationSample.setLatitude(mostRecentLocation.getLatitude());
+      createLocationSample.setLongitude(mostRecentLocation.getLongitude());
+      createLocationSample.setAccuracy((double) mostRecentLocation.getAccuracy());
+      createLocationSample.setProvider(mostRecentLocation.getProvider());
+      createLocationSample.setAltitude(mostRecentLocation.getAltitude());
 
       createLocationSample.run();
       if (createLocationSample.getSuccess()) {
@@ -353,8 +328,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
             @Override
             public void run() {
 
-              if (currentLocation != null
-                  && currentLocation.getTime() > System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+              if (mostRecentLocation != null
+                  && mostRecentLocation.getTime() > System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
                 displayFixedLocationView();
               } else {
                 displayWaitingForLocationFix();
@@ -395,6 +370,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     }
 
   }
+
+
 
 
 }

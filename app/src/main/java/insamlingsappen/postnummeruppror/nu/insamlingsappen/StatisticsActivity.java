@@ -13,6 +13,7 @@ import android.widget.Toast;
 import org.apache.http.impl.client.DefaultHttpClient;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetLocationStatistics;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetServerStatistics;
 
 
 public class StatisticsActivity extends ActionBarActivity {
@@ -25,6 +26,9 @@ public class StatisticsActivity extends ActionBarActivity {
   private TextView server_statistics_numberOfAccountsTextView;
   private TextView server_statistics_numberOfLocationSamplesTextView;
 
+  private TextView server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView;
+  private TextView server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView;
+
   private Double latitude;
   private Double longitude;
 
@@ -36,6 +40,9 @@ public class StatisticsActivity extends ActionBarActivity {
     server_statistics_refreshButton = (Button) findViewById(R.id.server_statistics_refresh);
     server_statistics_numberOfAccountsTextView = (TextView) findViewById(R.id.server_statistics_number_of_accounts);
     server_statistics_numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_statistics_number_of_location_samples);
+
+    server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_100_meters);
+    server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_500_meters);
 
     if (this.getIntent().getExtras() != null) {
       if (this.getIntent().getExtras().containsKey(intent_extra_latitude)) {
@@ -90,8 +97,8 @@ public class StatisticsActivity extends ActionBarActivity {
       getLocationStatistics.run();
       if (getLocationStatistics.getSuccess()) {
 
-        server_statistics_numberOfAccountsTextView.setText(String.valueOf(getLocationStatistics.getNumberOfAccounts()));
-        server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getLocationStatistics.getNumberOfLocationSamples()));
+        server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinOneHundredMetersRadius()));
+        server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinFiveHundredMetersRadius()));
 
       } else {
         Toast.makeText(StatisticsActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
@@ -99,10 +106,28 @@ public class StatisticsActivity extends ActionBarActivity {
 
       }
 
+      GetServerStatistics getServerStatistics = new GetServerStatistics();
+      getServerStatistics.setHttpClient(new DefaultHttpClient());
+      getServerStatistics.setServerHostname(Application.serverHostname);
+      getServerStatistics.run();
+      if (getServerStatistics.getSuccess()) {
+
+        server_statistics_numberOfAccountsTextView.setText(String.valueOf(getServerStatistics.getNumberOfAccounts()));
+        server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getServerStatistics.getNumberOfLocationSamples()));
+
+      } else {
+        Toast.makeText(StatisticsActivity.this, getServerStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
+        Log.e("GetServerStatistics", getServerStatistics.getFailureMessage(), getServerStatistics.getFailureException());
+
+      }
+
+
 
     } finally {
       server_statistics_refreshButton.setEnabled(true);
     }
+
+
   }
 
 

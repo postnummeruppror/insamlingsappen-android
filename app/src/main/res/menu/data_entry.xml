@@ -8,11 +8,6 @@
     android:orderInCategory="100"
     app:showAsAction="never" />
   <item
-    android:id="@+id/action_account"
-    android:title="@string/action_account"
-    android:orderInCategory="100"
-    app:showAsAction="never" />
-  <item
     android:id="@+id/action_statistics"
     android:title="@string/action_statistics"
     android:orderInCategory="100"
@@ -20,6 +15,12 @@
   <item
     android:id="@+id/action_settings"
     android:title="@string/action_setting"
+    android:orderInCategory="100"
+    android:visible="false"
+    app:showAsAction="never" />
+  <item
+    android:id="@+id/action_account"
+    android:title="@string/action_account"
     android:orderInCategory="100"
     app:showAsAction="never" />
 </menu>
