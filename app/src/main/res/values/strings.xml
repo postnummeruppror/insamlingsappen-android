@@ -19,11 +19,11 @@
     <string name="server_number_of_location_samples_100_meters">…inom 100 meter:</string>
     <string name="server_number_of_location_samples_500_meters">…inom 500 meter:</string>
     <string name="update_server_statitics">Uppdatera serverstatistik</string>
-    <string name="location_fix_label">Väntar på position…\nÄr du inomhus? Gå till ett fönster!</string>
+    <string name="location_fix_label">Väntar på position…\nÄr du inomhus? Gå till ett fönster!\nTack för din tålmodighet!</string>
     <string name="email_address">E-postadress</string>
     <string name="account_identity">Kontoidentitiet</string>
     <string name="account_setup_submit_account">Registrera kontodetaljer</string>
-    <string name="account_cc_zero">Jag samlar personligen in alla postnummerrapporter och delar med mig av dem till allmänheten i enighet med licensen <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</string>
+    <string name="account_cc_zero">Jag lovar på heder och samvete att jag personligen samlat in alla postnummerrapporter från källor som inte omfattas av upphovsrättslagen.\nRapporterna delar jag med mig till allmänheten i enighet med licensen <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>, jag ställer med andra ord inga krav på källhänvisning , ekonomisk ersättning eller hur rapporterna används från de som tar del av denna data.</string>
     <string name="action_account">Kontodetaljer</string>
     <string name="action_setting">Inställningar</string>
     <string name="title_activity_account">AccountActivity</string>

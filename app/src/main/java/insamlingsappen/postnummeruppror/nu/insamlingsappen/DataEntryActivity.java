@@ -87,6 +87,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     fixed_location_view = findViewById(R.id.fixed_location_view);
     data_entry_view = findViewById(R.id.data_entry_view);
 
+    // There is a thread that handle displaying them.
+    // Not having both of them set GONE at start will cause unwanted GUI effects.
+    fixed_location_view.setVisibility(View.GONE);
+    waiting_for_location_fix_view.setVisibility(View.GONE);
+
 
     location_timestampTextView = (TextView) findViewById(R.id.location_timestamp);
     location_latitudeTextView = (TextView) findViewById(R.id.location_latitude);
@@ -126,6 +131,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     Criteria criteria = new Criteria();
     criteria.setAccuracy(Criteria.ACCURACY_FINE);
+
     provider = locationManager.getBestProvider(criteria, true);
     Location location = locationManager.getLastKnownLocation(provider);
 
@@ -156,11 +162,13 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   protected void onResume() {
     super.onResume();
 
+    currentLocation = null;
     displayWaitingForLocationFix();
 
-    currentLocation = null;
     new Thread(assertGoodLocationFixRunnable).start();
+
     locationManager.requestLocationUpdates(provider, 0, 0, this);
+
 
   }
 
@@ -169,13 +177,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     super.onPause();
     locationManager.removeUpdates(this);
     assertGoodLocationFixRunnable.stop = true;
-  }
-
-  @Override
-  protected void onDestroy() {
-    super.onDestroy();
-    locationManager.removeUpdates(this);
-
   }
 
   @Override
