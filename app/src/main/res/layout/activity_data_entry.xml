@@ -6,93 +6,21 @@
                 android:paddingLeft="@dimen/activity_horizontal_margin"
                 android:paddingRight="@dimen/activity_horizontal_margin"
                 android:paddingTop="@dimen/activity_vertical_margin"
-                tools:context=".Insamling">
+                tools:context="insamlingsappen.postnummeruppror.nu.insamlingsappen.DataEntryActivity">
 
   <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="vertical">
 
-    <!-- location fix -->
 
     <LinearLayout
-      android:id="@+id/location_fix"
+      android:id="@+id/data_entry_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:paddingLeft="16dp"
-      android:paddingRight="16dp"
-      android:visibility="gone">
-
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/location_fix_label"/>
-
-
-      <ProgressBar
-        android:id="@+id/location_fix_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_centerHorizontal="true"/>
-
-
-    </LinearLayout>
-
-
-    <!-- account setup -->
-
-
-    <LinearLayout
-      android:id="@+id/account_setup"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:orientation="vertical"
-      android:paddingLeft="16dp"
-      android:paddingRight="16dp"
-      >
-
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/email_address"/>
-
-      <EditText
-        android:id="@+id/account_setup_email_address"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:inputType="textEmailAddress"/>
-
-      <CheckBox
-        android:id="@+id/account_setup_cc_zero"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/account_cc_zero"/>
-
-      <Button
-        android:id="@+id/account_setup_submit_account"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/account_setup_submit_account"/>
-
-
-    </LinearLayout>
-
-
-    <!-- contents -->
-    <LinearLayout
-      android:id="@+id/content"
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
-      android:orientation="vertical"
-      android:paddingLeft="16dp"
-      android:paddingRight="16dp"
-      android:visibility="gone"
+      android:visibility="visible"
       >
 
 
@@ -108,15 +36,55 @@
         android:layout_height="wrap_content"
         android:inputType="number"/>
 
+
       <Button
         android:id="@+id/submit_location_sample"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:enabled="false"
         android:text="@string/send_postnummer"/>
 
       <View
         android:layout_width="fill_parent"
         android:layout_height="16dp"/>
+
+    </LinearLayout>
+
+    <!-- waiting for location fix -->
+
+    <LinearLayout
+      android:id="@+id/waiting_for_location_fix_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="fill_parent"
+      android:layout_height="fill_parent"
+      android:orientation="vertical"
+      android:visibility="visible">
+
+      <TextView
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:text="@string/location_fix_label"/>
+
+
+      <ProgressBar
+        android:id="@+id/location_fix_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"/>
+
+
+    </LinearLayout>
+
+
+    <LinearLayout
+      android:id="@+id/fixed_location_view"
+      xmlns:android="http://schemas.android.com/apk/res/android"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:orientation="vertical"
+      android:visibility="visible">
+
 
       <TextView
         android:layout_width="fill_parent"
@@ -241,101 +209,6 @@
           android:text="@string/not_applicable"/>
 
       </LinearLayout>
-
-
-      <View
-        android:layout_width="fill_parent"
-        android:layout_height="16dp"/>
-
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/system_info_header"/>
-
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/server_number_of_accounts"/>
-
-        <TextView
-          android:id="@+id/server_statistics_number_of_accounts"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/server_number_of_location_samples"/>
-
-        <TextView
-          android:id="@+id/server_statistics_number_of_location_samples"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/server_number_of_location_samples_100_meters"/>
-
-        <TextView
-          android:id="@+id/server_number_of_location_samples_100_meters"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/server_number_of_location_samples_500_meters"/>
-
-        <TextView
-          android:id="@+id/server_number_of_location_samples_500_meters"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/not_applicable"/>
-
-      </LinearLayout>
-
-      <Button
-        android:id="@+id/server_statistics_refresh"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/update_server_statitics"/>
-
 
     </LinearLayout>
 

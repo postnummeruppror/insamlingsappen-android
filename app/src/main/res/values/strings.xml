@@ -1,33 +1,37 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-  <string name="app_name">Postnummeruppror</string>
-
-  <string name="action_settings">Om</string>
-
-  <string name="provider">Datakälla:</string>
-  <string name="altitude">Höjd över havet:</string>
-  <string name="accuracy">Felmarginal:</string>
-  <string name="latitude">Latitud:</string>
-  <string name="longitude">Longitud:</string>
-
-  <string name="postnummer_header">Postnummret där du befinner dig nu:</string>
-
-  <string name="send_postnummer">Registrera postnummer</string>
-  <string name="not_applicable">Väntar på data…</string>
-  <string name="location_header">Information om senast kända position:</string>
-  <string name="timestamp">Tidsstämpel:</string>
-  <string name="system_info_header">Global statistik:</string>
-  <string name="server_number_of_accounts">Antal användare:</string>
-  <string name="server_number_of_location_samples">Antal rapporter:</string>
-  <string name="server_number_of_location_samples_100_meters">…inom 100 meter:</string>
-  <string name="server_number_of_location_samples_500_meters">…inom 500 meter:</string>
-  <string name="update_server_statitics">Uppdatera serverstatistik</string>
-  <string name="location_fix_label">Väntar på position… Är du inomhus? Gå till ett fönster!</string>
-  <string name="email_address">E-postadress</string>
-  <string name="account_identity">Kontoidentitiet</string>
-  <string name="account_setup_submit_account">Registrera kontodetaljer</string>
-  <string name="account_cc_zero">Jag samlar personligen in alla postnummerrapporter och delar med mig av dem till allmänheten i enighet med licensen <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</string>
-
+    <string name="app_name">Postnummeruppror</string>
+    <string name="action_about">Om</string>
+    <string name="provider">Datakälla:</string>
+    <string name="altitude">Höjd över havet:</string>
+    <string name="accuracy">Felmarginal:</string>
+    <string name="latitude">Latitud:</string>
+    <string name="longitude">Longitud:</string>
+    <string name="postnummer_header">Postnummret där du befinner dig nu:</string>
+    <string name="send_postnummer">Registrera postnummer</string>
+    <string name="not_applicable">Väntar på data…</string>
+    <string name="location_header">Information om senast kända position:</string>
+    <string name="timestamp">Tidsstämpel:</string>
+    <string name="system_info_header">Global statistik:</string>
+    <string name="server_number_of_accounts">Antal användare:</string>
+    <string name="server_number_of_location_samples">Antal rapporter:</string>
+    <string name="server_number_of_location_samples_100_meters">…inom 100 meter:</string>
+    <string name="server_number_of_location_samples_500_meters">…inom 500 meter:</string>
+    <string name="update_server_statitics">Uppdatera serverstatistik</string>
+    <string name="location_fix_label">Väntar på position…\nÄr du inomhus? Gå till ett fönster!</string>
+    <string name="email_address">E-postadress</string>
+    <string name="account_identity">Kontoidentitiet</string>
+    <string name="account_setup_submit_account">Registrera kontodetaljer</string>
+    <string name="account_cc_zero">Jag samlar personligen in alla postnummerrapporter och delar med mig av dem till allmänheten i enighet med licensen <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>.</string>
+    <string name="action_account">Kontodetaljer</string>
+    <string name="action_setting">Inställningar</string>
+    <string name="title_activity_account">AccountActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_statistics">StatisticsActivity</string>
+    <string name="action_statistics">Statistik</string>
+    <string name="title_activity_about">AboutActivity</string>
+  <string name="about">PC LOAD LETTER</string>
 
 </resources>
