@@ -151,9 +151,15 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   }
 
   @Override
+  protected void onDestroy() {
+    super.onDestroy();
+    locationService.stop();
+  }
+
+  @Override
   protected void onPause() {
     super.onPause();
-    locationService.stop();
+    locationService.removeUpdates(this);
     assertGoodLocationFixRunnable.stop = true;
   }
 
