@@ -66,6 +66,8 @@ public class AccountActivity extends ActionBarActivity {
 
         account.setEmailAddress(emailAddress.getText().toString());
         account.setAcceptingCcZero(acceptingCcZero.isChecked());
+        account.setFirstName(firstName.getText().toString());
+        account.setLastName(lastName.getText().toString());
 
         SetAccount setAccount = new SetAccount();
 
