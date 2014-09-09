@@ -30,16 +30,30 @@
         android:layout_width="16dp"
         android:layout_height="16dp"/>
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/email_address"/>
-
       <EditText
         android:id="@+id/account_setup_email_address"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/email_address_hint"
         android:inputType="textEmailAddress"/>
+
+      <EditText
+        android:id="@+id/account_setup_fist_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/first_name_hint"
+        android:inputType="textCapWords"/>
+
+      <EditText
+        android:id="@+id/account_setup_last_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/last_name_hint"
+        android:inputType="textCapWords"/>
+
+      <View
+        android:layout_width="16dp"
+        android:layout_height="16dp"/>
 
       <CheckBox
         android:id="@+id/account_setup_cc_zero"

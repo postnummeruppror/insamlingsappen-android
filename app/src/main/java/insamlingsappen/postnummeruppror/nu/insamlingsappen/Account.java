@@ -11,6 +11,8 @@ public class Account {
   private static final String preferencesFile = "Account";
   private static final String field_identity = "identity";
   private static final String field_emailAddress = "emailAddress";
+  private static final String field_firstName = "firstName";
+  private static final String field_lastName = "lastName";
   private static final String field_acceptingCcZero = "acceptingCcZero";
 
   public static SharedPreferences getAccountPreferences(Context context) {
@@ -28,6 +30,8 @@ public class Account {
       account.setIdentity(identity);
       account.setEmailAddress(accountPreferences.getString(field_emailAddress, null));
       account.setAcceptingCcZero(accountPreferences.getBoolean(field_acceptingCcZero, false));
+      account.setFirstName(accountPreferences.getString(field_firstName, null));
+      account.setLastName(accountPreferences.getString(field_lastName, null));
     }
 
     return account;
@@ -42,6 +46,8 @@ public class Account {
     SharedPreferences.Editor editor = accountPreferences.edit();
     editor.putString(field_identity, account.getIdentity());
     editor.putString(field_emailAddress, account.getEmailAddress());
+    editor.putString(field_firstName, account.getFirstName());
+    editor.putString(field_lastName, account.getLastName());
     editor.putBoolean(field_acceptingCcZero, account.isAcceptingCcZero());
     editor.apply();
 
@@ -50,6 +56,8 @@ public class Account {
   private String identity;
   private String emailAddress;
   private boolean acceptingCcZero;
+  private String firstName;
+  private String lastName;
 
   public String getIdentity() {
     return identity;
@@ -73,5 +81,21 @@ public class Account {
 
   public void setAcceptingCcZero(boolean acceptingCcZero) {
     this.acceptingCcZero = acceptingCcZero;
+  }
+
+  public String getFirstName() {
+    return firstName;
+  }
+
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
+
+  public String getLastName() {
+    return lastName;
+  }
+
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
   }
 }

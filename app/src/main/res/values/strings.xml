@@ -18,7 +18,7 @@
   <string name="server_number_of_location_samples_500_meters">…inom 500 meter:</string>
   <string name="update_server_statitics">Uppdatera</string>
   <string name="location_fix_label">Väntar på position…\nÄr du inomhus? Gå till ett fönster!\nTack för din tålmodighet!</string>
-  <string name="email_address">E-postadress</string>
+  <string name="email_address_hint">E-postadress</string>
   <string name="account_identity">Kontoidentitiet</string>
   <string name="account_setup_submit_account">Skicka</string>
   <string name="account_cc_zero">Postnummerdata jag rapporterar in kommer från icke upphovsrättligt skyddade källor och jag delar med av dessa till allmänheten i enighet med licensen <a href="http://creativecommons.org/publicdomain/zero/1.0/">CC0 1.0</a>, dvs jag ställer inga krav på källhänvisning, ekonomisk ersättning eller hur datat används.</string>
@@ -43,5 +43,7 @@
   <string name="no_location">positionerar…</string>
   <string name="i_stand_still">Jag står stilla och väntar på en så bra positionering som möjligt.</string>
   <string name="house_name_hint">Uppgång</string>
+  <string name="first_name_hint">Förnamn</string>
+  <string name="last_name_hint">Efternamn</string>
 
 </resources>
