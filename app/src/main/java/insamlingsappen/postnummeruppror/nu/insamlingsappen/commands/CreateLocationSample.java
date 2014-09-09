@@ -21,6 +21,7 @@ public class CreateLocationSample extends PostJsonToServerCommand {
 
   private String streetName;
   private String houseNumber;
+  private String houseName;
   private String postalCode;
   private String postalTown;
 
@@ -51,7 +52,16 @@ public class CreateLocationSample extends PostJsonToServerCommand {
     json.put("postalTown", postalTown);
     json.put("streetName", streetName);
     json.put("houseNumber", houseNumber);
+    json.put("houseName", houseName);
 
+  }
+
+  public String getHouseName() {
+    return houseName;
+  }
+
+  public void setHouseName(String houseName) {
+    this.houseName = houseName;
   }
 
   public String getAccountIdentity() {

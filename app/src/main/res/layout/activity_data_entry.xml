@@ -33,54 +33,41 @@
         android:layout_height="16dp"/>
 
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/postal_code_header"/>
-
-
       <EditText
         android:id="@+id/location_postal_code"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/postal_code_hint"
         android:inputType="number"/>
 
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/postal_town_header"/>
-
-
-      <AutoCompleteTextView
+      <EditText
         android:id="@+id/location_postal_town"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="textAutoComplete|textCapSentences"/>
+        android:hint="@string/postal_town_hint"
+        android:inputType="text|textCapSentences"/>
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/street_name_header"/>
-
-
-      <AutoCompleteTextView
+      <EditText
         android:id="@+id/location_street_name"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="textAutoComplete|textCapSentences"/>
-
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/house_number_header"/>
-
+        android:hint="@string/street_name_hint"
+        android:inputType="text|textCapSentences"/>
 
       <EditText
         android:id="@+id/location_house_number"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:hint="@string/house_number_hint"
         android:inputType="number"/>
+
+      <EditText
+        android:id="@+id/location_house_name"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/house_name_hint"
+        android:inputType="textCapCharacters"/>
 
 
       <Button
@@ -96,178 +83,54 @@
 
     </LinearLayout>
 
-    <!-- waiting for location fix -->
+    <!-- location fix -->
+
 
     <LinearLayout
-      android:id="@+id/waiting_for_location_fix_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="fill_parent"
-      android:layout_height="fill_parent"
+      android:layout_height="wrap_content"
       android:orientation="vertical"
-      android:visibility="visible">
+      android:visibility="visible"
+      >
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:gravity="center"
-        android:text="@string/location_fix_label"/>
-
-
-      <ProgressBar
-        android:id="@+id/location_fix_progress"
-        style="?android:attr/progressBarStyleLarge"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"/>
-
-
-    </LinearLayout>
-
-
-    <!-- fixed location -->
-
-
-    <ScrollView
-      android:layout_width="match_parent"
-      android:layout_height="wrap_content">
-
-
-      <LinearLayout
-        android:id="@+id/fixed_location_view"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="visible">
-
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
         <TextView
           android:layout_width="fill_parent"
           android:layout_height="wrap_content"
-          android:text="@string/location_header"/>
+          android:layout_marginRight="16dp"
+          android:text="@string/location_accuracy_value"/>
 
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/timestamp"/>
-
-          <TextView
-            android:id="@+id/location_timestamp"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/provider"/>
-
-          <TextView
-            android:id="@+id/provider"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-
-        </LinearLayout>
-
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/altitude"/>
-
-          <TextView
-            android:id="@+id/location_altitude"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/accuracy"/>
-
-          <TextView
-            android:id="@+id/location_accuracy"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/latitude"/>
-
-          <TextView
-            android:id="@+id/location_latitude"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-        </LinearLayout>
-
-        <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                      android:layout_width="wrap_content"
-                      android:layout_height="wrap_content"
-                      android:orientation="horizontal">
-
-          <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="16dp"
-            android:text="@string/longitude"/>
-
-
-          <TextView
-            android:id="@+id/location_longitude"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/not_applicable"/>
-
-        </LinearLayout>
+        <TextView
+          android:id="@+id/location_accuracy_value"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/no_location"/>
 
       </LinearLayout>
 
-    </ScrollView>
 
+      <ProgressBar
+        android:id="@+id/location_accuracy_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:max="100"
+        android:progress="0"
+
+        />
+
+      <CheckBox
+        android:id="@+id/location_accuracy_standing_still"
+        android:text="@string/i_stand_still"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    </LinearLayout>
 
   </LinearLayout>
 

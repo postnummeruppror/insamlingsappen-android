@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -17,14 +19,14 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.apache.http.impl.client.DefaultHttpClient;
-
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.CreateLocationSample;
 
@@ -35,25 +37,19 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private CompoundLocationService locationService;
   private Location mostRecentLocation;
+  private Location selectedLocation;
 
-  private View waiting_for_location_fix_view;
-  private View fixed_location_view;
-  private View data_entry_view;
+  private ProgressBar accuracyProgressBar;
+  private TextView accuracyValue;
+  private CheckBox accuracyIStandStill;
 
+  private EditText postalCode;
+  private EditText postalTown;
+  private EditText streetName;
+  private EditText houseNumber;
+  private EditText houseName;
 
-  private TextView location_timestampTextView;
-  private TextView location_latitudeTextView;
-  private TextView location_longitudeTextView;
-  private TextView location_accuracyTextView;
-  private TextView location_altitudeTextView;
-  private TextView location_providerTextView;
-
-  private EditText location_postalCodeEditText;
-  private AutoCompleteTextView location_postalTownAutoCompleteTextView;
-  private AutoCompleteTextView location_streetNameAutoCompleteTextView;
-  private EditText location_houseNumberEditText;
-
-  private Button location_submitPostalCodeButton;
+  private Button submit;
 
 
   private long maximumMillisecondsAgeOfLocationFix = 30 * 1000; // 30 seconds
@@ -84,38 +80,38 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     // Define views and widgets the application touch.
 
-    waiting_for_location_fix_view = findViewById(R.id.waiting_for_location_fix_view);
-    fixed_location_view = findViewById(R.id.fixed_location_view);
-    data_entry_view = findViewById(R.id.data_entry_view);
+    accuracyProgressBar = (ProgressBar) findViewById(R.id.location_accuracy_progress_bar);
+    accuracyValue = (TextView) findViewById(R.id.location_accuracy_value);
+    accuracyIStandStill = (CheckBox) findViewById(R.id.location_accuracy_standing_still);
 
-    // There is a thread that handle displaying them.
-    // Not having both of them set GONE at start will cause unwanted GUI effects.
-    fixed_location_view.setVisibility(View.GONE);
-    waiting_for_location_fix_view.setVisibility(View.GONE);
+    accuracyIStandStill.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+      @Override
+      public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
+        if (!checked) {
+          onLocationChanged(mostRecentLocation);
+        }
+      }
+    });
 
+    postalCode = (EditText) findViewById(R.id.location_postal_code);
+    postalTown = (EditText) findViewById(R.id.location_postal_town);
+    streetName = (EditText) findViewById(R.id.location_street_name);
+    houseNumber = (EditText) findViewById(R.id.location_house_number);
+    houseName = (EditText) findViewById(R.id.location_house_name);
 
-    location_timestampTextView = (TextView) findViewById(R.id.location_timestamp);
-    location_latitudeTextView = (TextView) findViewById(R.id.location_latitude);
-    location_longitudeTextView = (TextView) findViewById(R.id.location_longitude);
-    location_accuracyTextView = (TextView) findViewById(R.id.location_accuracy);
-    location_altitudeTextView = (TextView) findViewById(R.id.location_altitude);
-    location_providerTextView = (TextView) findViewById(R.id.provider);
+    submit = (Button) findViewById(R.id.submit_location_sample);
 
-    location_postalCodeEditText = (EditText) findViewById(R.id.location_postal_code);
-    location_postalTownAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.location_postal_town);
-    location_streetNameAutoCompleteTextView = (AutoCompleteTextView) findViewById(R.id.location_street_name);
-    location_houseNumberEditText = (EditText) findViewById(R.id.location_house_number);
-
-    location_submitPostalCodeButton = (Button) findViewById(R.id.submit_location_sample);
-
-    location_submitPostalCodeButton.setOnClickListener(new View.OnClickListener() {
+    submit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
         if (sendLocationSample()) {
-          location_postalCodeEditText.setText(null);
-          location_postalTownAutoCompleteTextView.setText(null);
-          location_streetNameAutoCompleteTextView.setText(null);
-          location_houseNumberEditText.setText(null);
+          postalCode.setText(null);
+          postalTown.setText(null);
+          streetName.setText(null);
+          houseNumber.setText(null);
+          houseName.setText(null);
+
+          accuracyIStandStill.setChecked(false);
         }
       }
     });
@@ -161,7 +157,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     if (mostRecentLocation != null) {
       onLocationChanged(mostRecentLocation);
     }
-    displayWaitingForLocationFix();
+
+//    accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+//    accuracyProgressBar.setProgress(0);
 
     new Thread(assertGoodLocationFixRunnable).start();
 
@@ -216,12 +214,42 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     mostRecentLocation = location;
 
-    location_timestampTextView.setText(String.valueOf(new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(location.getTime()))));
-    location_latitudeTextView.setText(String.valueOf(location.getLatitude()));
-    location_longitudeTextView.setText(String.valueOf(location.getLongitude()));
-    location_accuracyTextView.setText(String.valueOf(location.getAccuracy()));
-    location_altitudeTextView.setText(String.valueOf(location.getAltitude()));
-    location_providerTextView.setText(String.valueOf(location.getProvider()));
+    if (accuracyIStandStill.isChecked()) {
+      if (selectedLocation == null
+          || selectedLocation.getAccuracy() > location.getAccuracy()) {
+        selectedLocation = location;
+      }
+    } else {
+      selectedLocation = location;
+
+    }
+
+
+
+    if (selectedLocation.getAccuracy() < 10) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#35BF00"), PorterDuff.Mode.SRC_IN);
+    } else if (selectedLocation.getAccuracy() < 20) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#76C600"), PorterDuff.Mode.SRC_IN);
+    } else if (selectedLocation.getAccuracy() < 25) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#99CA00"), PorterDuff.Mode.SRC_IN);
+    } else if (selectedLocation.getAccuracy() < 30) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#BCCE00"), PorterDuff.Mode.SRC_IN);
+    } else if (selectedLocation.getAccuracy() < 40) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#D5A400"), PorterDuff.Mode.SRC_IN);
+    } else if (selectedLocation.getAccuracy() < 50) {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#D98400"), PorterDuff.Mode.SRC_IN);
+    } else {
+      accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#E51E00"), PorterDuff.Mode.SRC_IN);
+    }
+
+    float progress = (100f - selectedLocation.getAccuracy());
+    if (progress < 0) {
+      progress = 5;
+    }
+
+    accuracyProgressBar.setProgress((int)progress);
+    accuracyValue.setText(String.valueOf((int)selectedLocation.getAccuracy()) + " meter.");
+
 
   }
 
@@ -315,10 +343,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
       createLocationSample.setAccountIdentity(account.getIdentity());
 
-      createLocationSample.setPostalCode(location_postalCodeEditText.getText().toString());
-      createLocationSample.setPostalTown(location_postalTownAutoCompleteTextView.getText().toString());
-      createLocationSample.setStreetName(location_streetNameAutoCompleteTextView.getText().toString());
-      createLocationSample.setHouseNumber(location_houseNumberEditText.getText().toString());
+      createLocationSample.setPostalCode(postalCode.getText().toString());
+      createLocationSample.setPostalTown(postalTown.getText().toString());
+      createLocationSample.setStreetName(streetName.getText().toString());
+      createLocationSample.setHouseNumber(houseNumber.getText().toString());
+      createLocationSample.setHouseName(houseName.getText().toString());
 
       createLocationSample.setLatitude(mostRecentLocation.getLatitude());
       createLocationSample.setLongitude(mostRecentLocation.getLongitude());
@@ -353,11 +382,18 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
             @Override
             public void run() {
 
-              if (mostRecentLocation != null
-                  && mostRecentLocation.getTime() > System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
-                displayFixedLocationView();
+              if (!accuracyIStandStill.isChecked()
+                  && mostRecentLocation != null
+                  && mostRecentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+
+                accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                accuracyProgressBar.setProgress(0);
+                submit.setEnabled(false);
+
               } else {
-                displayWaitingForLocationFix();
+                if (!submit.isEnabled()) {
+                  submit.setEnabled(true);
+                }
               }
 
             }
@@ -378,23 +414,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   }
 
-  private void displayWaitingForLocationFix() {
-    if (waiting_for_location_fix_view.getVisibility() != View.VISIBLE) {
-      location_submitPostalCodeButton.setEnabled(false);
-      fixed_location_view.setVisibility(View.GONE);
-      waiting_for_location_fix_view.setVisibility(View.VISIBLE);
-    }
-  }
-
-  private void displayFixedLocationView() {
-
-    if (fixed_location_view.getVisibility() != View.VISIBLE) {
-      location_submitPostalCodeButton.setEnabled(true);
-      waiting_for_location_fix_view.setVisibility(View.GONE);
-      fixed_location_view.setVisibility(View.VISIBLE);
-    }
-
-  }
 
 
 }
