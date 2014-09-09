@@ -47,6 +47,8 @@ public class AccountActivity extends ActionBarActivity {
     if (account != null) {
       acceptingCcZero.setChecked(account.isAcceptingCcZero());
       emailAddress.setText(account.getEmailAddress());
+      firstName.setText(account.getFirstName());
+      lastName.setText(account.getLastName());
     }
 
     submit.setOnClickListener(new View.OnClickListener() {
