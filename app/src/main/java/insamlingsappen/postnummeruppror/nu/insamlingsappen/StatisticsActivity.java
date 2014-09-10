@@ -5,8 +5,6 @@ import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -20,8 +18,6 @@ public class StatisticsActivity extends ActionBarActivity {
 
   public static final String intent_extra_latitude = "latitude";
   public static final String intent_extra_longitude = "longitude";
-
-  private Button server_statistics_refreshButton;
 
   private TextView server_statistics_numberOfAccountsTextView;
   private TextView server_statistics_numberOfLocationSamplesTextView;
@@ -39,12 +35,10 @@ public class StatisticsActivity extends ActionBarActivity {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_statistics);
 
-    server_statistics_refreshButton = (Button) findViewById(R.id.server_statistics_refresh);
-
     server_statistics_numberOfAccountsTextView = (TextView) findViewById(R.id.server_statistics_number_of_accounts);
     server_statistics_numberOfLocationSamplesTextView = (TextView) findViewById(R.id.server_statistics_number_of_location_samples);
-    server_statistics_numberOfPostalTownsTextView = (TextView)findViewById(R.id.server_statistics_number_of_postal_towns);
-    server_statistics_numberOfPostalCodesTextView = (TextView)findViewById(R.id.server_statistics_number_of_postal_codes);
+    server_statistics_numberOfPostalTownsTextView = (TextView) findViewById(R.id.server_statistics_number_of_postal_towns);
+    server_statistics_numberOfPostalCodesTextView = (TextView) findViewById(R.id.server_statistics_number_of_postal_codes);
 
     server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_100_meters);
     server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView = (TextView) findViewById(R.id.server_number_of_location_samples_500_meters);
@@ -58,13 +52,6 @@ public class StatisticsActivity extends ActionBarActivity {
       }
     }
 
-    server_statistics_refreshButton.setOnClickListener(new View.OnClickListener() {
-      @Override
-      public void onClick(View view) {
-        updateServerStatistics();
-      }
-    });
-
 
   }
 
@@ -73,6 +60,7 @@ public class StatisticsActivity extends ActionBarActivity {
     super.onPostResume();
 
     updateServerStatistics();
+    updateLocationStatistics();
   }
 
   @Override
@@ -96,51 +84,70 @@ public class StatisticsActivity extends ActionBarActivity {
 
   public void updateServerStatistics() {
 
-    server_statistics_refreshButton.setEnabled(false);
-    try {
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
 
-      GetLocationStatistics getLocationStatistics = new GetLocationStatistics();
-      getLocationStatistics.setHttpClient(new DefaultHttpClient());
-      getLocationStatistics.setServerHostname(Application.serverHostname);
-      getLocationStatistics.setLatitude(latitude);
-      getLocationStatistics.setLongitude(longitude);
-      getLocationStatistics.run();
-      if (getLocationStatistics.getSuccess()) {
+        final GetLocationStatistics getLocationStatistics = new GetLocationStatistics();
+        getLocationStatistics.setHttpClient(new DefaultHttpClient());
+        getLocationStatistics.setServerHostname(Application.serverHostname);
+        getLocationStatistics.setLatitude(latitude);
+        getLocationStatistics.setLongitude(longitude);
+        getLocationStatistics.run();
 
-        server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinOneHundredMetersRadius()));
-        server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinFiveHundredMetersRadius()));
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            if (getLocationStatistics.getSuccess()) {
 
-      } else {
-        Toast.makeText(StatisticsActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
-        Log.e("GetLocationStatistics", getLocationStatistics.getFailureMessage(), getLocationStatistics.getFailureException());
+              server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinOneHundredMetersRadius()));
+              server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinFiveHundredMetersRadius()));
 
+            } else {
+              Toast.makeText(StatisticsActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetLocationStatistics", getLocationStatistics.getFailureMessage(), getLocationStatistics.getFailureException());
+
+            }
+          }
+        });
       }
-
-      GetServerStatistics getServerStatistics = new GetServerStatistics();
-      getServerStatistics.setHttpClient(new DefaultHttpClient());
-      getServerStatistics.setServerHostname(Application.serverHostname);
-      getServerStatistics.run();
-      if (getServerStatistics.getSuccess()) {
-
-        server_statistics_numberOfAccountsTextView.setText(String.valueOf(getServerStatistics.getNumberOfAccounts()));
-        server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getServerStatistics.getNumberOfLocationSamples()));
-        server_statistics_numberOfPostalCodesTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalCodes()));
-        server_statistics_numberOfPostalTownsTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalTowns()));
-
-      } else {
-        Toast.makeText(StatisticsActivity.this, getServerStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
-        Log.e("GetServerStatistics", getServerStatistics.getFailureMessage(), getServerStatistics.getFailureException());
-
-      }
-
-
-
-    } finally {
-      server_statistics_refreshButton.setEnabled(true);
-    }
-
+    }).start();
 
   }
 
+  public void updateLocationStatistics() {
+
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+
+        final GetServerStatistics getServerStatistics = new GetServerStatistics();
+        getServerStatistics.setHttpClient(new DefaultHttpClient());
+        getServerStatistics.setServerHostname(Application.serverHostname);
+        getServerStatistics.run();
+
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+
+            if (getServerStatistics.getSuccess()) {
+
+              server_statistics_numberOfAccountsTextView.setText(String.valueOf(getServerStatistics.getNumberOfAccounts()));
+              server_statistics_numberOfLocationSamplesTextView.setText(String.valueOf(getServerStatistics.getNumberOfLocationSamples()));
+              server_statistics_numberOfPostalCodesTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalCodes()));
+              server_statistics_numberOfPostalTownsTextView.setText(String.valueOf(getServerStatistics.getNumberOfPostalTowns()));
+
+            } else {
+              Toast.makeText(StatisticsActivity.this, getServerStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetServerStatistics", getServerStatistics.getFailureMessage(), getServerStatistics.getFailureException());
+
+            }
+          }
+        });
+
+      }
+    }).start();
+
+  }
 
 }
