@@ -5,19 +5,19 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import java.io.StringWriter;
 
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.Application;
+
 /**
  * Created by kalle on 07/09/14.
  */
-public abstract class PostJsonToServerCommand implements Runnable {
-
-  private HttpClient httpClient;
-  private String serverHostname;
+public abstract class ServerJSONAPICommand implements Runnable {
 
   // response values
 
@@ -26,13 +26,13 @@ public abstract class PostJsonToServerCommand implements Runnable {
   private Exception failureException;
 
   /**
-   * @return Path part of URL, needs to start with a forward slash. E.g. '/api/foo/bar'
+   * @return Path part of URL suffixing /api/[version]/, e.g. 'location_sample/search'
    */
-  protected abstract String postUrlPathFactory();
+  protected abstract String getJSONAPIURLSuffix();
 
-  protected abstract void assembleRequestJson(JSONObject json) throws JSONException;
+  protected abstract void assembleRequestJSON(JSONObject requestJSON) throws JSONException;
 
-  protected void processSuccessfulResponse(JSONObject json) throws JSONException {
+  protected void processSuccessfulResponse(JSONObject responseJSON) throws JSONException {
 
   }
 
@@ -42,7 +42,7 @@ public abstract class PostJsonToServerCommand implements Runnable {
 
     try {
 
-      assembleRequestJson(json);
+      assembleRequestJSON(json);
 
     } catch (JSONException e) {
       success = false;
@@ -53,9 +53,13 @@ public abstract class PostJsonToServerCommand implements Runnable {
 
     HttpResponse response;
     try {
-      HttpPost post = new HttpPost("http://" + serverHostname + postUrlPathFactory());
+      String suffix = getJSONAPIURLSuffix();
+      while (suffix.startsWith("/")) {
+        suffix = suffix.substring(1);
+      }
+      HttpPost post = new HttpPost("http://" + Application.serverHostname + "/api/" + Application.serverVersion + "/" + suffix);
       post.setEntity(new StringEntity(json.toString(), "UTF-8"));
-      response = httpClient.execute(post);
+      response = new DefaultHttpClient().execute(post);
     } catch (Exception e) {
       success = false;
       failureException = e;
@@ -95,22 +99,6 @@ public abstract class PostJsonToServerCommand implements Runnable {
 
     }
 
-  }
-
-  public HttpClient getHttpClient() {
-    return httpClient;
-  }
-
-  public void setHttpClient(HttpClient httpClient) {
-    this.httpClient = httpClient;
-  }
-
-  public String getServerHostname() {
-    return serverHostname;
-  }
-
-  public void setServerHostname(String serverHostname) {
-    this.serverHostname = serverHostname;
   }
 
   // response values

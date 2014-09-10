@@ -10,7 +10,7 @@ import android.widget.Toast;
 
 import org.apache.http.impl.client.DefaultHttpClient;
 
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetLocationStatistics;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetNumberOfLocationStatisticsInRadius;
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetServerStatistics;
 
 
@@ -82,30 +82,55 @@ public class StatisticsActivity extends ActionBarActivity {
     return super.onOptionsItemSelected(item);
   }
 
-  public void updateServerStatistics() {
+  public void updateLocationStatistics() {
 
     new Thread(new Runnable() {
       @Override
       public void run() {
 
-        final GetLocationStatistics getLocationStatistics = new GetLocationStatistics();
-        getLocationStatistics.setHttpClient(new DefaultHttpClient());
-        getLocationStatistics.setServerHostname(Application.serverHostname);
-        getLocationStatistics.setLatitude(latitude);
-        getLocationStatistics.setLongitude(longitude);
-        getLocationStatistics.run();
+        final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
+        getNumberOfLocationStatisticsInRadius.setLatitude(latitude);
+        getNumberOfLocationStatisticsInRadius.setLongitude(longitude);
+        getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.100d);
+        getNumberOfLocationStatisticsInRadius.run();
 
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            if (getLocationStatistics.getSuccess()) {
+            if (getNumberOfLocationStatisticsInRadius.getSuccess()) {
 
-              server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinOneHundredMetersRadius()));
-              server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getLocationStatistics.getLocationSamplesWithinFiveHundredMetersRadius()));
+              server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationStatisticsInRadius.getNumberOfLocationSamples()));
 
             } else {
-              Toast.makeText(StatisticsActivity.this, getLocationStatistics.getFailureMessage(), Toast.LENGTH_SHORT).show();
-              Log.e("GetLocationStatistics", getLocationStatistics.getFailureMessage(), getLocationStatistics.getFailureException());
+              Toast.makeText(StatisticsActivity.this, getNumberOfLocationStatisticsInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationStatisticsInRadius.getFailureMessage(), getNumberOfLocationStatisticsInRadius.getFailureException());
+
+            }
+          }
+        });
+      }
+    }).start();
+
+    new Thread(new Runnable() {
+      @Override
+      public void run() {
+
+        final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
+        getNumberOfLocationStatisticsInRadius.setLatitude(latitude);
+        getNumberOfLocationStatisticsInRadius.setLongitude(longitude);
+        getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.500d);
+        getNumberOfLocationStatisticsInRadius.run();
+
+        runOnUiThread(new Runnable() {
+          @Override
+          public void run() {
+            if (getNumberOfLocationStatisticsInRadius.getSuccess()) {
+
+              server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationStatisticsInRadius.getNumberOfLocationSamples()));
+
+            } else {
+              Toast.makeText(StatisticsActivity.this, getNumberOfLocationStatisticsInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationStatisticsInRadius.getFailureMessage(), getNumberOfLocationStatisticsInRadius.getFailureException());
 
             }
           }
@@ -115,15 +140,13 @@ public class StatisticsActivity extends ActionBarActivity {
 
   }
 
-  public void updateLocationStatistics() {
+  public void updateServerStatistics() {
 
     new Thread(new Runnable() {
       @Override
       public void run() {
 
         final GetServerStatistics getServerStatistics = new GetServerStatistics();
-        getServerStatistics.setHttpClient(new DefaultHttpClient());
-        getServerStatistics.setServerHostname(Application.serverHostname);
         getServerStatistics.run();
 
         runOnUiThread(new Runnable() {

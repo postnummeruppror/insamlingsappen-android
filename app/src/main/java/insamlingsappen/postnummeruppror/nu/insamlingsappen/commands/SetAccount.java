@@ -1,20 +1,12 @@
 package insamlingsappen.postnummeruppror.nu.insamlingsappen.commands;
 
-import org.apache.commons.io.IOUtils;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONTokener;
-
-import java.io.StringWriter;
 
 /**
  * Created by kalle on 07/09/14.
  */
-public class SetAccount extends PostJsonToServerCommand {
+public class SetAccount extends ServerJSONAPICommand {
 
   private String identity;
   private String emailAddress;
@@ -26,17 +18,17 @@ public class SetAccount extends PostJsonToServerCommand {
   }
 
   @Override
-  protected String postUrlPathFactory() {
-    return "/api/account/set";
+  protected String getJSONAPIURLSuffix() {
+    return "account/set";
   }
 
   @Override
-  protected void assembleRequestJson(JSONObject json) throws JSONException {
-    json.put("identity", identity);
-    json.put("emailAddress", emailAddress);
-    json.put("acceptingCcZero", acceptingCcZero);
-    json.put("firstName", firstName);
-    json.put("lastName", lastName);
+  protected void assembleRequestJSON(JSONObject requestJSON) throws JSONException {
+    requestJSON.put("identity", identity);
+    requestJSON.put("emailAddress", emailAddress);
+    requestJSON.put("acceptingCcZero", acceptingCcZero);
+    requestJSON.put("firstName", firstName);
+    requestJSON.put("lastName", lastName);
   }
 
   public String getIdentity() {

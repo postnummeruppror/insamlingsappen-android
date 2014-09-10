@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Created by kalle on 08/09/14.
  */
-public class GetServerStatistics extends PostJsonToServerCommand {
+public class GetServerStatistics extends ServerJSONAPICommand {
 
   // response values
 
@@ -16,21 +16,21 @@ public class GetServerStatistics extends PostJsonToServerCommand {
   private Integer numberOfPostalTowns;
 
   @Override
-  protected String postUrlPathFactory() {
-    return "/api/statistics/server";
+  protected String getJSONAPIURLSuffix() {
+    return "statistics/server";
   }
 
   @Override
-  protected void assembleRequestJson(JSONObject json) throws JSONException {
+  protected void assembleRequestJSON(JSONObject requestJSON) throws JSONException {
   }
 
   @Override
-  protected void processSuccessfulResponse(JSONObject json) throws JSONException {
+  protected void processSuccessfulResponse(JSONObject responseJSON) throws JSONException {
 
-    numberOfAccounts = json.getInt("numberOfAccounts");
-    numberOfLocationSamples = json.getInt("numberOfLocationSamples");
-    numberOfPostalCodes = json.getInt("numberOfPostalCodes");
-    numberOfPostalTowns = json.getInt("numberOfPostalTowns");
+    numberOfAccounts = responseJSON.getInt("numberOfAccounts");
+    numberOfLocationSamples = responseJSON.getInt("numberOfLocationSamples");
+    numberOfPostalCodes = responseJSON.getInt("numberOfPostalCodes");
+    numberOfPostalTowns = responseJSON.getInt("numberOfPostalTowns");
 
   }
 

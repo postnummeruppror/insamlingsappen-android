@@ -17,7 +17,6 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -25,8 +24,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.CreateLocationSample;
 
@@ -225,6 +222,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     }
 
 
+    if (selectedLocation.getAccuracy() > 15) {
+      // todo Är du inomhus? Gå till ett fönster så nära ingången som möjligt!
+    }
 
     if (selectedLocation.getAccuracy() < 10) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#35BF00"), PorterDuff.Mode.SRC_IN);
@@ -247,8 +247,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       progress = 5;
     }
 
-    accuracyProgressBar.setProgress((int)progress);
-    accuracyValue.setText(String.valueOf((int)selectedLocation.getAccuracy()) + " meter.");
+    accuracyProgressBar.setProgress((int) progress);
+    accuracyValue.setText(String.valueOf((int) selectedLocation.getAccuracy()) + " meter.");
 
 
   }
@@ -317,15 +317,22 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private boolean sendLocationSample() {
 
+    if (!accuracyIStandStill.isChecked()) {
+      Toast.makeText(DataEntryActivity.this, "Du måste stanna kvar på postadressen! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+      return false;
+    }
+
+    Location location = mostRecentLocation;
+
     Account account = Account.load(this);
 
-    if (mostRecentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
+    if (location.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
       // This is a secondary check. might not be needed as we have a thread that check for location fix!
       // Better safe than sorry though!
       Toast.makeText(DataEntryActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
       return false;
 
-    } else if (mostRecentLocation == null) {
+    } else if (location == null) {
       Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
       return false;
 
@@ -334,9 +341,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
 
       CreateLocationSample createLocationSample = new CreateLocationSample();
-
-      createLocationSample.setHttpClient(new DefaultHttpClient());
-      createLocationSample.setServerHostname(Application.serverHostname);
 
       createLocationSample.setApplication(Application.application);
       createLocationSample.setApplicationVersion(Application.version);
@@ -349,11 +353,11 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       createLocationSample.setHouseNumber(houseNumber.getText().toString());
       createLocationSample.setHouseName(houseName.getText().toString());
 
-      createLocationSample.setLatitude(mostRecentLocation.getLatitude());
-      createLocationSample.setLongitude(mostRecentLocation.getLongitude());
-      createLocationSample.setAccuracy((double) mostRecentLocation.getAccuracy());
-      createLocationSample.setProvider(mostRecentLocation.getProvider());
-      createLocationSample.setAltitude(mostRecentLocation.getAltitude());
+      createLocationSample.setLatitude(location.getLatitude());
+      createLocationSample.setLongitude(location.getLongitude());
+      createLocationSample.setAccuracy((double) location.getAccuracy());
+      createLocationSample.setProvider(location.getProvider());
+      createLocationSample.setAltitude(location.getAltitude());
 
       createLocationSample.run();
       if (createLocationSample.getSuccess()) {
@@ -388,12 +392,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
                 accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
                 accuracyProgressBar.setProgress(0);
-                submit.setEnabled(false);
 
-              } else {
-                if (!submit.isEnabled()) {
-                  submit.setEnabled(true);
-                }
               }
 
             }
@@ -413,7 +412,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     }
 
   }
-
 
 
 }

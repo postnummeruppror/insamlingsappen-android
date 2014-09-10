@@ -71,9 +71,6 @@ public class AccountActivity extends ActionBarActivity {
 
         SetAccount setAccount = new SetAccount();
 
-        setAccount.setServerHostname(Application.serverHostname);
-        setAccount.setHttpClient(new DefaultHttpClient());
-
         setAccount.setIdentity(account.getIdentity());
         setAccount.setFirstName(account.getFirstName());
         setAccount.setLastName(account.getLastName());

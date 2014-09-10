@@ -8,20 +8,64 @@
                 android:paddingTop="@dimen/activity_vertical_margin"
                 tools:context="insamlingsappen.postnummeruppror.nu.insamlingsappen.DataEntryActivity">
 
-  <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
+  <ScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
 
     <LinearLayout
-      android:id="@+id/data_entry_view"
       xmlns:android="http://schemas.android.com/apk/res/android"
       android:layout_width="fill_parent"
       android:layout_height="wrap_content"
       android:orientation="vertical"
       android:visibility="visible"
       >
+
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+        <TextView
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:layout_marginRight="16dp"
+          android:text="@string/location_accuracy_value"/>
+
+        <TextView
+          android:id="@+id/location_accuracy_value"
+          android:layout_width="fill_parent"
+          android:layout_height="wrap_content"
+          android:text="@string/no_location"/>
+
+      </LinearLayout>
+
+
+      <ProgressBar
+        android:id="@+id/location_accuracy_progress_bar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="16dp"
+        android:max="100"
+        android:progress="0"
+
+        />
+
+      <View
+        android:layout_width="fill_parent"
+        android:layout_height="16dp"/>
+
+
+      <CheckBox
+        android:id="@+id/location_accuracy_standing_still"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/i_stand_still"/>
+
+
+      <View
+        android:layout_width="fill_parent"
+        android:layout_height="16dp"/>
 
       <TextView
         android:layout_width="fill_parent"
@@ -70,68 +114,19 @@
         android:inputType="textCapCharacters"/>
 
 
-      <Button
-        android:id="@+id/submit_location_sample"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:enabled="false"
-        android:text="@string/send_postnummer"/>
-
       <View
         android:layout_width="fill_parent"
         android:layout_height="16dp"/>
 
-    </LinearLayout>
-
-    <!-- location fix -->
-
-
-    <LinearLayout
-      xmlns:android="http://schemas.android.com/apk/res/android"
-      android:layout_width="fill_parent"
-      android:layout_height="wrap_content"
-      android:orientation="vertical"
-      android:visibility="visible"
-      >
-
-      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-        <TextView
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:layout_marginRight="16dp"
-          android:text="@string/location_accuracy_value"/>
-
-        <TextView
-          android:id="@+id/location_accuracy_value"
-          android:layout_width="fill_parent"
-          android:layout_height="wrap_content"
-          android:text="@string/no_location"/>
-
-      </LinearLayout>
-
-
-      <ProgressBar
-        android:id="@+id/location_accuracy_progress_bar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="16dp"
-        android:max="100"
-        android:progress="0"
-
-        />
-
-      <CheckBox
-        android:id="@+id/location_accuracy_standing_still"
-        android:text="@string/i_stand_still"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+      <Button
+        android:id="@+id/submit_location_sample"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:text="@string/send_postnummer"/>
 
     </LinearLayout>
 
-  </LinearLayout>
+  </ScrollView>
 
 </RelativeLayout>

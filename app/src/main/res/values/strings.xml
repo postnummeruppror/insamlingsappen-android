@@ -35,13 +35,13 @@
   <string name="postal_town_hint">Postort</string>
   <string name="house_number_hint">Husnummer</string>
   <string name="street_name_hint">Gatunamn</string>
-  <string name="data_entry_header">Du måste minst fylla i postnummret.</string>
+  <string name="data_entry_header">Fyll i så mycket av postadressen du känner till för den plats du befinner dig på nu. Även enstaka husnummer, postorter, etc är intressant.</string>
   <string name="server_statistics_number_of_postal_towns">Antal unika postorter:</string>
   <string name="server_statistics_number_of_postal_codes">Antal unika postnummer:</string>
-  <string name="account_header">Väljer du att lämna något av fälten tomma kan den postnummerdata du rapporterar in inte användas. Du kan ändå använda applikationen och senare välja att fylla i dessa fält. Den data som tillgängliggörs publikt kommer alltid vara anonymiserad.</string>
-  <string name="location_accuracy_value">Felmarginal för positionering:</string>
+  <string name="account_header">Väljer du att utelämna någon av uppgifterna kan den postnummerdata du rapporterar in tyvärr inte användas. Du kan ändå använda applikationen och senare välja att fylla i dessa fält. Den data som tillgängliggörs publikt kommer alltid vara anonymiserad.</string>
+  <string name="location_accuracy_value">Positioneringens noggrannhet:</string>
   <string name="no_location">positionerar…</string>
-  <string name="i_stand_still">Jag står stilla och väntar på en så bra positionering som möjligt.</string>
+  <string name="i_stand_still">Jag stannar kvar på postadressen tills dess att jag trycker på "Registrera".</string>
   <string name="house_name_hint">Uppgång</string>
   <string name="first_name_hint">Förnamn</string>
   <string name="last_name_hint">Efternamn</string>

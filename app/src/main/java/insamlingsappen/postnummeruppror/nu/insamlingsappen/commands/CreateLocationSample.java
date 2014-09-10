@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Created by kalle on 07/09/14.
  */
-public class CreateLocationSample extends PostJsonToServerCommand {
+public class CreateLocationSample extends ServerJSONAPICommand {
 
   private String accountIdentity;
 
@@ -31,28 +31,28 @@ public class CreateLocationSample extends PostJsonToServerCommand {
 
 
   @Override
-  protected String postUrlPathFactory() {
-    return "/api/location_sample/create";
+  protected String getJSONAPIURLSuffix() {
+    return "location_sample/create";
   }
 
   @Override
-  protected void assembleRequestJson(JSONObject json) throws JSONException {
-    json.put("accountIdentity", accountIdentity);
+  protected void assembleRequestJSON(JSONObject requestJSON) throws JSONException {
+    requestJSON.put("accountIdentity", accountIdentity);
 
-    json.put("application", application);
-    json.put("applicationVersion", applicationVersion);
+    requestJSON.put("application", application);
+    requestJSON.put("applicationVersion", applicationVersion);
 
-    json.put("latitude", latitude);
-    json.put("longitude", longitude);
-    json.put("altitude", altitude);
-    json.put("provider", provider);
-    json.put("accuracy", accuracy);
+    requestJSON.put("latitude", latitude);
+    requestJSON.put("longitude", longitude);
+    requestJSON.put("altitude", altitude);
+    requestJSON.put("provider", provider);
+    requestJSON.put("accuracy", accuracy);
 
-    json.put("postalCode", postalCode);
-    json.put("postalTown", postalTown);
-    json.put("streetName", streetName);
-    json.put("houseNumber", houseNumber);
-    json.put("houseName", houseName);
+    requestJSON.put("postalCode", postalCode);
+    requestJSON.put("postalTown", postalTown);
+    requestJSON.put("streetName", streetName);
+    requestJSON.put("houseNumber", houseNumber);
+    requestJSON.put("houseName", houseName);
 
   }
 
