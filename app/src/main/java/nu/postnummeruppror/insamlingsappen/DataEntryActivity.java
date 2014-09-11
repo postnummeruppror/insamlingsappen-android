@@ -89,6 +89,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       @Override
       public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
         if (!checked) {
+          selectedLocation = null;
           onLocationChanged(mostRecentLocation);
         }
       }
@@ -114,6 +115,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
           accuracyIStandStill.setChecked(false);
           ruleBasedPostalTown = false;
+
+          selectedLocation = null;
 
         }
       }
@@ -323,28 +326,37 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private boolean sendLocationSample() {
 
+    String postalCode = this.postalCode.getText().toString().trim();
+    String postalTown = this.postalTown.getText().toString().trim();
+    String streetName = this.streetName.getText().toString().trim();
+    String houseNumber = this.houseNumber.getText().toString().trim();
+    String houseName = this.houseName.getText().toString().trim();
+
+    if (postalCode.isEmpty()
+        && postalTown.isEmpty()
+        && streetName.isEmpty()
+        && houseNumber.isEmpty()
+        && houseName.isEmpty()) {
+      Toast.makeText(DataEntryActivity.this, "Du måste fylla i minst ett av postadressfälten! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+      return false;
+    }
+
     if (!accuracyIStandStill.isChecked()) {
       Toast.makeText(DataEntryActivity.this, "Du måste stanna kvar på postadressen! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
       return false;
     }
 
-    Location location = mostRecentLocation;
 
-    Account account = Account.load(this);
 
-    if (location.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
-      // This is a secondary check. might not be needed as we have a thread that check for location fix!
-      // Better safe than sorry though!
-      Toast.makeText(DataEntryActivity.this, "För gammal position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-      return false;
-
-    } else if (location == null) {
+    if (selectedLocation == null) {
       Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
       return false;
 
     } else {
       // todo are you sure? please check postal code before submitting
 
+
+      Account account = Account.load(this);
 
       CreateLocationSample createLocationSample = new CreateLocationSample();
 
@@ -353,17 +365,17 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
       createLocationSample.setAccountIdentity(account.getIdentity());
 
-      createLocationSample.setPostalCode(postalCode.getText().toString());
-      createLocationSample.setPostalTown(postalTown.getText().toString());
-      createLocationSample.setStreetName(streetName.getText().toString());
-      createLocationSample.setHouseNumber(houseNumber.getText().toString());
-      createLocationSample.setHouseName(houseName.getText().toString());
+      createLocationSample.setPostalCode(postalCode);
+      createLocationSample.setPostalTown(postalTown);
+      createLocationSample.setStreetName(streetName);
+      createLocationSample.setHouseNumber(houseNumber);
+      createLocationSample.setHouseName(houseName);
 
-      createLocationSample.setLatitude(location.getLatitude());
-      createLocationSample.setLongitude(location.getLongitude());
-      createLocationSample.setAccuracy((double) location.getAccuracy());
-      createLocationSample.setProvider(location.getProvider());
-      createLocationSample.setAltitude(location.getAltitude());
+      createLocationSample.setLatitude(selectedLocation.getLatitude());
+      createLocationSample.setLongitude(selectedLocation.getLongitude());
+      createLocationSample.setAccuracy((double) selectedLocation.getAccuracy());
+      createLocationSample.setProvider(selectedLocation.getProvider());
+      createLocationSample.setAltitude(selectedLocation.getAltitude());
 
       createLocationSample.run();
       if (createLocationSample.getSuccess()) {
