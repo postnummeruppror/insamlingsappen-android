@@ -89,8 +89,8 @@ public class StatisticsActivity extends ActionBarActivity {
       public void run() {
 
         final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
-        getNumberOfLocationStatisticsInRadius.setLatitude(latitude);
-        getNumberOfLocationStatisticsInRadius.setLongitude(longitude);
+        getNumberOfLocationStatisticsInRadius.setCentroidLatitude(latitude);
+        getNumberOfLocationStatisticsInRadius.setCentroidLongitude(longitude);
         getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.100d);
         getNumberOfLocationStatisticsInRadius.run();
 
@@ -116,8 +116,8 @@ public class StatisticsActivity extends ActionBarActivity {
       public void run() {
 
         final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
-        getNumberOfLocationStatisticsInRadius.setLatitude(latitude);
-        getNumberOfLocationStatisticsInRadius.setLongitude(longitude);
+        getNumberOfLocationStatisticsInRadius.setCentroidLatitude(latitude);
+        getNumberOfLocationStatisticsInRadius.setCentroidLongitude(longitude);
         getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.500d);
         getNumberOfLocationStatisticsInRadius.run();
 

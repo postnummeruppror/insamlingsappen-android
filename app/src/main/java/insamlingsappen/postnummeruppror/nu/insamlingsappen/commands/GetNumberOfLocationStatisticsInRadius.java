@@ -8,8 +8,8 @@ import org.json.JSONObject;
  */
 public class GetNumberOfLocationStatisticsInRadius extends ServerJSONAPICommand {
 
-  private Double latitude;
-  private Double longitude;
+  private Double centroidLatitude;
+  private Double centroidLongitude;
   private Double radiusKilometers;
 
   private String reference;
@@ -36,8 +36,8 @@ public class GetNumberOfLocationStatisticsInRadius extends ServerJSONAPICommand 
     jsonQuery.put("type", "coordinate circle envelope");
     jsonQuery.put("latitudeField", "latitude");
     jsonQuery.put("longitudeField", "longitude");
-    jsonQuery.put("latitude", latitude);
-    jsonQuery.put("longitude", longitude);
+    jsonQuery.put("centroidLatitude", centroidLatitude);
+    jsonQuery.put("centroidLongitude", centroidLongitude);
     jsonQuery.put("radiusKilometers", radiusKilometers);
   }
 
@@ -55,20 +55,20 @@ public class GetNumberOfLocationStatisticsInRadius extends ServerJSONAPICommand 
     this.radiusKilometers = radiusKilometers;
   }
 
-  public Double getLatitude() {
-    return latitude;
+  public Double getCentroidLatitude() {
+    return centroidLatitude;
   }
 
-  public void setLatitude(Double latitude) {
-    this.latitude = latitude;
+  public void setCentroidLatitude(Double centroidLatitude) {
+    this.centroidLatitude = centroidLatitude;
   }
 
-  public Double getLongitude() {
-    return longitude;
+  public Double getCentroidLongitude() {
+    return centroidLongitude;
   }
 
-  public void setLongitude(Double longitude) {
-    this.longitude = longitude;
+  public void setCentroidLongitude(Double centroidLongitude) {
+    this.centroidLongitude = centroidLongitude;
   }
 
   public String getReference() {
