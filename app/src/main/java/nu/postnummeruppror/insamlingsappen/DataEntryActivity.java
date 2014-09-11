@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -49,6 +51,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private Button submit;
 
+  private boolean ruleBasedPostalTown = false;
 
   private long maximumMillisecondsAgeOfLocationFix = 30 * 1000; // 30 seconds
   private AssertGoodLocationFixRunnable assertGoodLocationFixRunnable = new AssertGoodLocationFixRunnable();
@@ -110,6 +113,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
           houseName.setText(null);
 
           accuracyIStandStill.setChecked(false);
+          ruleBasedPostalTown = false;
+
         }
       }
     });
