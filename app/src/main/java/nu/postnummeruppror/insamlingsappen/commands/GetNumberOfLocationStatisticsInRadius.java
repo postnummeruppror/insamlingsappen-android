@@ -1,4 +1,4 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen.commands;
+package nu.postnummeruppror.insamlingsappen.commands;
 
 import org.json.JSONException;
 import org.json.JSONObject;

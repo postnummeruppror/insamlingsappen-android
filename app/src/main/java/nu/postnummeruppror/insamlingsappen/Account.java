@@ -1,4 +1,4 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen;
+package nu.postnummeruppror.insamlingsappen;
 
 import android.content.Context;
 import android.content.SharedPreferences;

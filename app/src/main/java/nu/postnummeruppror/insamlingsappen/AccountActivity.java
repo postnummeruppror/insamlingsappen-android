@@ -1,4 +1,4 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen;
+package nu.postnummeruppror.insamlingsappen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -12,11 +12,10 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-
 import java.util.UUID;
 
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.SetAccount;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.commands.SetAccount;
 
 
 public class AccountActivity extends ActionBarActivity {

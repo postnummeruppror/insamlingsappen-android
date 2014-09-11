@@ -1,4 +1,4 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen;
+package nu.postnummeruppror.insamlingsappen;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -25,7 +25,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.CreateLocationSample;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.commands.CreateLocationSample;
 
 
 public class DataEntryActivity extends ActionBarActivity implements LocationListener {

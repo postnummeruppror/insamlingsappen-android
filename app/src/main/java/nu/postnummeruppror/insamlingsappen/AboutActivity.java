@@ -1,10 +1,12 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen;
+package nu.postnummeruppror.insamlingsappen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
+
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
 
 
 public class AboutActivity extends ActionBarActivity {

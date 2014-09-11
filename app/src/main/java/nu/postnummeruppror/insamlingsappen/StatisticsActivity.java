@@ -1,4 +1,4 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen;
+package nu.postnummeruppror.insamlingsappen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
@@ -8,10 +8,9 @@ import android.view.MenuItem;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.apache.http.impl.client.DefaultHttpClient;
-
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetNumberOfLocationStatisticsInRadius;
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.commands.GetServerStatistics;
+import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.commands.GetNumberOfLocationStatisticsInRadius;
+import nu.postnummeruppror.insamlingsappen.commands.GetServerStatistics;
 
 
 public class StatisticsActivity extends ActionBarActivity {

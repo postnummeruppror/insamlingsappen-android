@@ -1,8 +1,7 @@
-package insamlingsappen.postnummeruppror.nu.insamlingsappen.commands;
+package nu.postnummeruppror.insamlingsappen.commands;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -12,7 +11,7 @@ import org.json.JSONTokener;
 
 import java.io.StringWriter;
 
-import insamlingsappen.postnummeruppror.nu.insamlingsappen.Application;
+import nu.postnummeruppror.insamlingsappen.Application;
 
 /**
  * Created by kalle on 07/09/14.

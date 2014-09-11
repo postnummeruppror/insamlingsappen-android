@@ -1,6 +1,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="insamlingsappen.postnummeruppror.nu.insamlingsappen.AccountActivity" >
+    tools:context="nu.postnummeruppror.insamlingsappen.AccountActivity" >
 
 </menu>
