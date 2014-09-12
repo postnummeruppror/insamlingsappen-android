@@ -152,6 +152,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   protected void onResume() {
     super.onResume();
 
+    accuracyIStandStill.setChecked(false);
+
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
       showSettingsAlert();
@@ -180,6 +182,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   @Override
   protected void onPause() {
     super.onPause();
+
+    accuracyIStandStill.setChecked(false);
+
     locationService.removeUpdates(this);
     assertGoodLocationFixRunnable.stop = true;
   }
