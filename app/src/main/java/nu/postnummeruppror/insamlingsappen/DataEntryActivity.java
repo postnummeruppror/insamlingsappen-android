@@ -13,8 +13,6 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +26,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
-import nu.postnummeruppror.insamlingsappen.commands.CreateLocationSample;
 
 
 public class DataEntryActivity extends ActionBarActivity implements LocationListener {
@@ -106,20 +103,78 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     submit.setOnClickListener(new View.OnClickListener() {
       @Override
       public void onClick(View view) {
-        if (sendLocationSample()) {
-          postalCode.setText(null);
-          postalTown.setText(null);
-          streetName.setText(null);
-          houseNumber.setText(null);
-          houseName.setText(null);
 
-          accuracyIStandStill.setChecked(false);
-          ruleBasedPostalTown = false;
 
-          selectedLocation = null;
+        String postalCode = DataEntryActivity.this.postalCode.getText().toString().trim();
+        String postalTown = DataEntryActivity.this.postalTown.getText().toString().trim();
+        String streetName = DataEntryActivity.this.streetName.getText().toString().trim();
+        String houseNumber = DataEntryActivity.this.houseNumber.getText().toString().trim();
+        String houseName = DataEntryActivity.this.houseName.getText().toString().trim();
+
+        if (postalCode.isEmpty()
+            && postalTown.isEmpty()
+            && streetName.isEmpty()
+            && houseNumber.isEmpty()
+            && houseName.isEmpty()) {
+          Toast.makeText(DataEntryActivity.this, "Du måste fylla i minst ett av postadressfälten! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+          return;
+        }
+
+        if (!accuracyIStandStill.isChecked()) {
+          Toast.makeText(DataEntryActivity.this, "Du måste stanna kvar på postadressen! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+          return;
+        }
+
+
+        if (selectedLocation == null) {
+          Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
+          return;
 
         }
+
+
+        // todo are you sure? please check postal code before submitting
+
+        LocationSample locationSample = new LocationSample();
+
+        locationSample.setTimestampCreated(System.currentTimeMillis());
+
+        locationSample.setPostalCode(postalCode);
+        locationSample.setPostalTown(postalTown);
+        locationSample.setStreetName(streetName);
+        locationSample.setHouseNumber(houseNumber);
+        locationSample.setHouseName(houseName);
+
+        locationSample.setLatitude(selectedLocation.getLatitude());
+        locationSample.setLongitude(selectedLocation.getLongitude());
+        locationSample.setAccuracy((double) selectedLocation.getAccuracy());
+        locationSample.setProvider(selectedLocation.getProvider());
+        locationSample.setAltitude(selectedLocation.getAltitude());
+
+        DataStore store = new DataStore();
+        store.open(DataEntryActivity.this);
+        try {
+          store.create(locationSample);
+        } finally {
+          store.close();
+        }
+
+        Toast.makeText(DataEntryActivity.this, "Rapporten har sparats.\nTack för ditt bidrag!", Toast.LENGTH_LONG).show();
+
+
+        DataEntryActivity.this.postalCode.setText(null);
+        DataEntryActivity.this.postalTown.setText(null);
+        DataEntryActivity.this.streetName.setText(null);
+        DataEntryActivity.this.houseNumber.setText(null);
+        DataEntryActivity.this.houseName.setText(null);
+
+        accuracyIStandStill.setChecked(false);
+        ruleBasedPostalTown = false;
+
+        selectedLocation = null;
       }
+
+
     });
 
 
@@ -151,6 +206,8 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   @Override
   protected void onResume() {
     super.onResume();
+
+    startService(new Intent(this, PublisherService.class));
 
     accuracyIStandStill.setChecked(false);
 
@@ -214,6 +271,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
         break;
       case R.id.action_account:
         startActivityForResult(new Intent(this, AccountActivity.class), CREATE_ACCOUNT_REQUEST);
+        break;
+      case R.id.action_location_samples:
+        startActivity(new Intent(this, LocationSamplesActivity.class));
         break;
     }
     return true;
@@ -328,72 +388,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     }
   }
 
-
-  private boolean sendLocationSample() {
-
-    String postalCode = this.postalCode.getText().toString().trim();
-    String postalTown = this.postalTown.getText().toString().trim();
-    String streetName = this.streetName.getText().toString().trim();
-    String houseNumber = this.houseNumber.getText().toString().trim();
-    String houseName = this.houseName.getText().toString().trim();
-
-    if (postalCode.isEmpty()
-        && postalTown.isEmpty()
-        && streetName.isEmpty()
-        && houseNumber.isEmpty()
-        && houseName.isEmpty()) {
-      Toast.makeText(DataEntryActivity.this, "Du måste fylla i minst ett av postadressfälten! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-      return false;
-    }
-
-    if (!accuracyIStandStill.isChecked()) {
-      Toast.makeText(DataEntryActivity.this, "Du måste stanna kvar på postadressen! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-      return false;
-    }
-
-
-
-    if (selectedLocation == null) {
-      Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-      return false;
-
-    } else {
-      // todo are you sure? please check postal code before submitting
-
-
-      Account account = Account.load(this);
-
-      CreateLocationSample createLocationSample = new CreateLocationSample();
-
-      createLocationSample.setApplication(Application.application);
-      createLocationSample.setApplicationVersion(Application.version);
-
-      createLocationSample.setAccountIdentity(account.getIdentity());
-
-      createLocationSample.setPostalCode(postalCode);
-      createLocationSample.setPostalTown(postalTown);
-      createLocationSample.setStreetName(streetName);
-      createLocationSample.setHouseNumber(houseNumber);
-      createLocationSample.setHouseName(houseName);
-
-      createLocationSample.setLatitude(selectedLocation.getLatitude());
-      createLocationSample.setLongitude(selectedLocation.getLongitude());
-      createLocationSample.setAccuracy((double) selectedLocation.getAccuracy());
-      createLocationSample.setProvider(selectedLocation.getProvider());
-      createLocationSample.setAltitude(selectedLocation.getAltitude());
-
-      createLocationSample.run();
-      if (createLocationSample.getSuccess()) {
-        Toast.makeText(DataEntryActivity.this, "Rapporten mottagen av server!", Toast.LENGTH_SHORT).show();
-        return true;
-
-      } else {
-        Toast.makeText(DataEntryActivity.this, createLocationSample.getFailureMessage(), Toast.LENGTH_SHORT).show();
-        Log.e("SendLocationSample", createLocationSample.getFailureMessage(), createLocationSample.getFailureException());
-        return false;
-      }
-    }
-  }
 
   private class AssertGoodLocationFixRunnable implements Runnable {
     private boolean stop = true;

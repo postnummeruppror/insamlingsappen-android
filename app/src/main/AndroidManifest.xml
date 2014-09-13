@@ -31,6 +31,18 @@
             android:name="nu.postnummeruppror.insamlingsappen.AboutActivity"
             android:label="@string/title_activity_about" >
         </activity>
+
+        <service
+            android:name="nu.postnummeruppror.insamlingsappen.PublisherService"
+            android:enabled="true"
+            android:exported="true" >
+        </service>
+
+        <activity
+            android:name="nu.postnummeruppror.insamlingsappen.LocationSamplesActivity"
+            android:label="@string/title_activity_location_reports" >
+
+        </activity>
     </application>
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />

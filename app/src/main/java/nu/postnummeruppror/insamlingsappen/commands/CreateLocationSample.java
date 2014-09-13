@@ -26,6 +26,12 @@ public class CreateLocationSample extends ServerJSONAPICommand {
   private String postalTown;
 
 
+  // response value
+
+  private Long identity;
+
+
+
   public CreateLocationSample() {
   }
 
@@ -54,6 +60,11 @@ public class CreateLocationSample extends ServerJSONAPICommand {
     requestJSON.put("houseNumber", houseNumber);
     requestJSON.put("houseName", houseName);
 
+  }
+
+  @Override
+  protected void processSuccessfulResponse(JSONObject responseJSON) throws JSONException {
+    identity = responseJSON.getLong("identity");
   }
 
   public String getHouseName() {
@@ -158,5 +169,12 @@ public class CreateLocationSample extends ServerJSONAPICommand {
 
   public void setApplicationVersion(String applicationVersion) {
     this.applicationVersion = applicationVersion;
+  }
+
+  // response value
+
+
+  public Long getIdentity() {
+    return identity;
   }
 }
