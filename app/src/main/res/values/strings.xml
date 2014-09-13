@@ -46,5 +46,19 @@
   <string name="first_name_hint">Förnamn</string>
   <string name="last_name_hint">Efternamn</string>
   <string name="version">Versionsnummer</string>
+  <string name="about_text">Visste du att information om adresser och postnummer inte finns fritt tillgängliga? Det ställer till det för de som behöver korrekt adressinformation för sina tjänster men inte kan betala 40 000 kronor om året för att få tillgång till informationen.
+\n\n
+Vi behöver din hjälp! Genom att använda Insamlingsappen kan du bidra med information om postnummer, adresser och deras platser. Samtidigt bidrar du till att visa för politker och andra att affärsmodellen för postnummer är förlegad och behöver ändras. I andra länder har det visat sig att nyttan för samhället blir mycket större med fri adressinformation. Tillsammans kan vi bygga ett nytt postnummersystem.
+\n\n\n
+Hur du använder Insamlingsappen
+\n\n
+När du befinner dig vid en adress kan du starta appen, fylla i information om vilken adress och postnummer du befinner dig vid. Informationen sparas i vår databas och är fritt tillgänglig för alla. Det gör inget om du inte kan den fullständiga postadressen, vi har nästan lika mycket nytta av ett ensamt husnummer, gatunamn, postort, osv. Varje bit information är värdefull.
+\n\n\n
+Har du tillgång till koordinatsatta adressuppgifter?
+\n\n
+Kontakta oss gärna om du har tillgång till ett register med koordinatsatta postadresser så importerar vi dem till applikationen.
+\n\n
+<a href="postnummeruppror@gmail.com">postnummeruppror@gmail.com</a>
+</string>
 
 </resources>

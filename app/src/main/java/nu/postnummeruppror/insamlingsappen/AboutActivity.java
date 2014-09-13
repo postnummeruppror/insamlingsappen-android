@@ -2,6 +2,7 @@ package nu.postnummeruppror.insamlingsappen;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -12,6 +13,7 @@ import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
 public class AboutActivity extends ActionBarActivity {
 
   private TextView version;
+  private TextView text;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -20,6 +22,11 @@ public class AboutActivity extends ActionBarActivity {
 
     version = (TextView)findViewById(R.id.about_version);
     version.setText("Version " + Application.version + ".");
+
+    text = (TextView)findViewById(R.id.about_text);
+
+    // make mailto-link clickable
+    text.setMovementMethod(LinkMovementMethod.getInstance());
 
   }
 
