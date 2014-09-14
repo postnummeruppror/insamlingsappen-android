@@ -275,6 +275,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
       case R.id.action_location_samples:
         startActivity(new Intent(this, LocationSamplesActivity.class));
         break;
+      case R.id.action_help:
+        startActivity(new Intent(this, HelpActivity.class));
+        break;
     }
     return true;
   }

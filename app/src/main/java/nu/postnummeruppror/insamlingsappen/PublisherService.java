@@ -60,7 +60,7 @@ public class PublisherService extends Service {
             List<LocationSample> nonPublishedLocationSamples = dataStore.listNonPublished();
             if (nonPublishedLocationSamples.isEmpty()) {
 
-              Log.i("PublisherServer", "No unpublished location samples to process.");
+              Log.d("PublisherServer", "No unpublished location samples to process.");
 
             } else {
 

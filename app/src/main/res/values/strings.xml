@@ -54,11 +54,16 @@
 \n\nKontakta oss gärna om du har tillgång till ett register med koordinatsatta postadresser så importerar vi dem till applikationen.
 \n\n<a href="postnummeruppror@gmail.com">postnummeruppror@gmail.com</a></string>
     <string name="title_activity_location_reports">Dina rapporter</string>
-  <string name="action_location_reports">Dina rapporter</string>
-  <string name="location_reports_header_postal_town">Postort</string>
-  <string name="location_reports_header_postal_code">Postnummer</string>
-  <string name="location_reports_header_street_address">Gata</string>
-  <string name="location_reports_header_house_number">Husnummer</string>
-  <string name="location_reports_header_house_name">Uppgång</string>
+    <string name="action_location_reports">Dina rapporter</string>
+    <string name="location_reports_header_postal_town">Postort</string>
+    <string name="location_reports_header_postal_code">Postnummer</string>
+    <string name="location_reports_header_street_address">Gata</string>
+    <string name="location_reports_header_house_number">Husnummer</string>
+    <string name="location_reports_header_house_name">Uppgång</string>
+    <string name="title_activity_help">Hjälp</string>
+  <string name="help_text">Var kan man hitta postnummer?
+\n\nBe om kvitto när du köper något, där står nästan alltid postnummret. Men kontrollera så det är exempelvis adressen till kedjans huvudkontoret eller liknande.
+\n\nFråga dem som bor där du befinner dig.</string>
+  <string name="action_help">Hjälp</string>
 
 </resources>
