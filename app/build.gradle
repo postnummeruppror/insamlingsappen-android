@@ -5,11 +5,11 @@ android {
   buildToolsVersion "20.0.0"
 
   defaultConfig {
-    applicationId "insamlingsappen.postnummeruppror.nu.insamlingsappen"
+    applicationId "nu.postnummeruppror.insamlingsappen"
     minSdkVersion 10
     targetSdkVersion 20
-    versionCode 5
-    versionName "0.0.5"
+    versionCode 7
+    versionName "0.0.7"
   }
   buildTypes {
     release {
