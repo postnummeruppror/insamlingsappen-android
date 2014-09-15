@@ -48,17 +48,23 @@ public class CreateLocationSample extends ServerJSONAPICommand {
     requestJSON.put("application", application);
     requestJSON.put("applicationVersion", applicationVersion);
 
-    requestJSON.put("latitude", latitude);
-    requestJSON.put("longitude", longitude);
-    requestJSON.put("altitude", altitude);
-    requestJSON.put("provider", provider);
-    requestJSON.put("accuracy", accuracy);
+    JSONObject coordinateJSON = new JSONObject();
+    requestJSON.put("coordinate", coordinateJSON);
 
-    requestJSON.put("postalCode", postalCode);
-    requestJSON.put("postalTown", postalTown);
-    requestJSON.put("streetName", streetName);
-    requestJSON.put("houseNumber", houseNumber);
-    requestJSON.put("houseName", houseName);
+    coordinateJSON.put("latitude", latitude);
+    coordinateJSON.put("longitude", longitude);
+    coordinateJSON.put("altitude", altitude);
+    coordinateJSON.put("provider", provider);
+    coordinateJSON.put("accuracy", accuracy);
+
+    JSONObject postalAddressJSON = new JSONObject();
+    requestJSON.put("postalAddress", postalAddressJSON);
+
+    postalAddressJSON.put("postalCode", postalCode);
+    postalAddressJSON.put("postalTown", postalTown);
+    postalAddressJSON.put("streetName", streetName);
+    postalAddressJSON.put("houseNumber", houseNumber);
+    postalAddressJSON.put("houseName", houseName);
 
   }
 
