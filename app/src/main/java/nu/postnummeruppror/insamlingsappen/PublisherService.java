@@ -8,6 +8,8 @@ import android.util.Log;
 import java.util.List;
 
 import nu.postnummeruppror.insamlingsappen.commands.CreateLocationSample;
+import nu.postnummeruppror.insamlingsappen.domain.Account;
+import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 
 /**
  * Sends data to the server
@@ -74,17 +76,21 @@ public class PublisherService extends Service {
                 createLocationSample.setApplicationVersion(Application.version);
                 createLocationSample.setAccountIdentity(account.getIdentity());
 
-                createLocationSample.setProvider(locationSample.getProvider());
-                createLocationSample.setLongitude(locationSample.getLongitude());
-                createLocationSample.setLatitude(locationSample.getLatitude());
-                createLocationSample.setAccuracy(locationSample.getAccuracy());
-                createLocationSample.setAltitude(locationSample.getAltitude());
+                if (locationSample.getCoordinate() != null) {
+                  createLocationSample.setProvider(locationSample.getCoordinate().getProvider());
+                  createLocationSample.setLongitude(locationSample.getCoordinate().getLongitude());
+                  createLocationSample.setLatitude(locationSample.getCoordinate().getLatitude());
+                  createLocationSample.setAccuracy(locationSample.getCoordinate().getAccuracy());
+                  createLocationSample.setAltitude(locationSample.getCoordinate().getAltitude());
+                }
 
-                createLocationSample.setStreetName(locationSample.getStreetName());
-                createLocationSample.setHouseNumber(locationSample.getHouseNumber());
-                createLocationSample.setHouseName(locationSample.getHouseName());
-                createLocationSample.setPostalCode(locationSample.getPostalCode());
-                createLocationSample.setPostalTown(locationSample.getPostalTown());
+                if (locationSample.getPostalAddress() != null) {
+                  createLocationSample.setStreetName(locationSample.getPostalAddress().getStreetName());
+                  createLocationSample.setHouseNumber(locationSample.getPostalAddress().getHouseNumber());
+                  createLocationSample.setHouseName(locationSample.getPostalAddress().getHouseName());
+                  createLocationSample.setPostalCode(locationSample.getPostalAddress().getPostalCode());
+                  createLocationSample.setPostalTown(locationSample.getPostalAddress().getPostalTown());
+                }
 
                 createLocationSample.run();
 

@@ -3,10 +3,8 @@ package insamlingsappen.postnummeruppror.nu.insamlingsappen;
 import android.app.Application;
 import android.test.ApplicationTestCase;
 
-import java.util.List;
-
 import nu.postnummeruppror.insamlingsappen.DataStore;
-import nu.postnummeruppror.insamlingsappen.LocationSample;
+import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 
 /**
  * <a href="http://d.android.com/tools/testing/testing_android.html">Testing Fundamentals</a>

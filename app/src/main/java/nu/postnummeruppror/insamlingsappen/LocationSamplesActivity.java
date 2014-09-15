@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
 
 public class LocationSamplesActivity extends ActionBarActivity {
 
@@ -61,11 +62,13 @@ public class LocationSamplesActivity extends ActionBarActivity {
         TableRow row = new TableRow(this);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
-        addColumn(row, locationSample.getPostalTown());
-        addColumn(row, locationSample.getPostalCode());
-        addColumn(row, locationSample.getStreetName());
-        addColumn(row, locationSample.getHouseNumber());
-        addColumn(row, locationSample.getHouseName());
+        if (locationSample.getPostalAddress() != null) {
+          addColumn(row, locationSample.getPostalAddress().getPostalTown());
+          addColumn(row, locationSample.getPostalAddress().getPostalCode());
+          addColumn(row, locationSample.getPostalAddress().getStreetName());
+          addColumn(row, locationSample.getPostalAddress().getHouseNumber());
+          addColumn(row, locationSample.getPostalAddress().getHouseName());
+        }
 
         table.addView(row);
 

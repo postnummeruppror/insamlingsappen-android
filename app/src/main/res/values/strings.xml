@@ -35,7 +35,7 @@
     <string name="postal_town_hint">Postort</string>
     <string name="house_number_hint">Husnummer</string>
     <string name="street_name_hint">Gatunamn</string>
-    <string name="data_entry_header">Fyll i så mycket av postadressen du känner till för den plats du befinner dig på nu. Även enstaka husnummer, postorter, etc är intressant.</string>
+    <string name="data_entry_header">Fyll i så mycket av postadressen du känner till. Om du rapporterar positionering är det även intressant med enstaka gatunamn, husnummer, postorter, etc.</string>
     <string name="server_statistics_number_of_postal_towns">Antal unika postorter:</string>
     <string name="server_statistics_number_of_postal_codes">Antal unika postnummer:</string>
     <string name="account_header">Väljer du att utelämna någon av uppgifterna kan den postnummerdata du rapporterar in tyvärr inte användas. Du kan ändå använda applikationen och senare välja att fylla i dessa fält. Den data som tillgängliggörs publikt kommer alltid vara anonymiserad.</string>
@@ -65,5 +65,9 @@
 \n\nBe om kvitto när du köper något, där står nästan alltid postnummret. Men kontrollera så det är exempelvis adressen till kedjans huvudkontoret eller liknande.
 \n\nFråga dem som bor där du befinner dig.</string>
   <string name="action_help">Hjälp</string>
+  <string name="location_radio_header">Hur skall din nuvarande position användas?</string>
+  <string name="location_radio_i_stand_still">Jag befinner mig på postadressen tills dess att jag registrerat den.</string>
+  <string name="location_radio_i_move">Jag befinner mig på postadressen nu men går vidare innan den registrerats.</string>
+  <string name="location_radio_im_not_there">Använd inte min position, den har inget att göra med postadressen jag registerar.</string>
 
 </resources>

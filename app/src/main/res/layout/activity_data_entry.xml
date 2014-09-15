@@ -56,11 +56,43 @@
         android:layout_height="16dp"/>
 
 
-      <CheckBox
-        android:id="@+id/location_accuracy_standing_still"
-        android:layout_width="match_parent"
+      <TextView
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/i_stand_still"/>
+        android:text="@string/location_radio_header"/>
+
+      <View
+        android:layout_width="fill_parent"
+        android:layout_height="16dp"/>
+
+
+      <RadioGroup
+        android:id="@+id/location_radio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" >
+
+        <RadioButton
+          android:id="@+id/location_radio_i_stand_still"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/location_radio_i_stand_still"
+          android:checked="false" />
+
+        <RadioButton
+          android:id="@+id/location_radio_i_move"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/location_radio_i_move"
+          android:checked="false" />
+
+        <RadioButton
+          android:id="@+id/location_radio_im_not_there"
+          android:layout_width="wrap_content"
+          android:layout_height="wrap_content"
+          android:text="@string/location_radio_im_not_there"
+          android:checked="false" />
+
+      </RadioGroup>
 
 
       <View

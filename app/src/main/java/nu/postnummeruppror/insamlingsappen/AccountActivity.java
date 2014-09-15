@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
 import nu.postnummeruppror.insamlingsappen.commands.SetAccount;
+import nu.postnummeruppror.insamlingsappen.domain.Account;
 
 
 public class AccountActivity extends ActionBarActivity {

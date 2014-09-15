@@ -18,14 +18,18 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.domain.Account;
+import nu.postnummeruppror.insamlingsappen.domain.Coordinate;
+import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
+import nu.postnummeruppror.insamlingsappen.domain.PostalAddress;
 
 
 public class DataEntryActivity extends ActionBarActivity implements LocationListener {
@@ -34,11 +38,17 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private CompoundLocationService locationService;
   private Location mostRecentLocation;
-  private Location selectedLocation;
+
+  private Location selectedLocationIStandStill;
+  private Location selectedLocationIMove;
 
   private ProgressBar accuracyProgressBar;
   private TextView accuracyValue;
-  private CheckBox accuracyIStandStill;
+
+  private RadioGroup positionRadioGroup;
+  private RadioButton positionIStandStill;
+  private RadioButton positionIMove;
+  private RadioButton positionImNotThere;
 
   private EditText postalCode;
   private EditText postalTown;
@@ -48,10 +58,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
   private Button submit;
 
-  private boolean ruleBasedPostalTown = false;
-
-  private long maximumMillisecondsAgeOfLocationFix = 30 * 1000; // 30 seconds
-  private AssertGoodLocationFixRunnable assertGoodLocationFixRunnable = new AssertGoodLocationFixRunnable();
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -80,17 +86,23 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     accuracyProgressBar = (ProgressBar) findViewById(R.id.location_accuracy_progress_bar);
     accuracyValue = (TextView) findViewById(R.id.location_accuracy_value);
-    accuracyIStandStill = (CheckBox) findViewById(R.id.location_accuracy_standing_still);
 
-    accuracyIStandStill.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-      @Override
-      public void onCheckedChanged(CompoundButton compoundButton, boolean checked) {
-        if (!checked) {
-          selectedLocation = null;
+    positionRadioGroup = (RadioGroup) findViewById(R.id.location_radio);
+    positionIStandStill = (RadioButton) findViewById(R.id.location_radio_i_stand_still);
+    positionIMove = (RadioButton) findViewById(R.id.location_radio_i_move);
+    positionImNotThere = (RadioButton) findViewById(R.id.location_radio_im_not_there);
+
+    positionRadioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+      public void onCheckedChanged(RadioGroup group, int checkedId) {
+        selectedLocationIStandStill = null;
+        selectedLocationIMove = null;
+
+        if (mostRecentLocation != null) {
           onLocationChanged(mostRecentLocation);
         }
       }
     });
+
 
     postalCode = (EditText) findViewById(R.id.location_postal_code);
     postalTown = (EditText) findViewById(R.id.location_postal_town);
@@ -120,16 +132,22 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
           return;
         }
 
-        if (!accuracyIStandStill.isChecked()) {
-          Toast.makeText(DataEntryActivity.this, "Du måste stanna kvar på postadressen! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-          return;
+        Location selectedLocation = null;
+
+        if (positionIStandStill.isChecked()) {
+          if (selectedLocationIStandStill == null) {
+            Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_LONG).show();
+          } else {
+            selectedLocation = selectedLocationIStandStill;
+          }
         }
 
-
-        if (selectedLocation == null) {
-          Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_SHORT).show();
-          return;
-
+        if (positionIMove.isChecked()) {
+          if (selectedLocationIMove == null) {
+            Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_LONG).show();
+          } else {
+            selectedLocation = selectedLocationIMove;
+          }
         }
 
 
@@ -139,17 +157,26 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
         locationSample.setTimestampCreated(System.currentTimeMillis());
 
-        locationSample.setPostalCode(postalCode);
-        locationSample.setPostalTown(postalTown);
-        locationSample.setStreetName(streetName);
-        locationSample.setHouseNumber(houseNumber);
-        locationSample.setHouseName(houseName);
+        PostalAddress postalAddress = new PostalAddress();
+        postalAddress.setPostalCode(postalCode);
+        postalAddress.setPostalTown(postalTown);
+        postalAddress.setStreetName(streetName);
+        postalAddress.setHouseNumber(houseNumber);
+        postalAddress.setHouseName(houseName);
+        locationSample.setPostalAddress(postalAddress);
 
-        locationSample.setLatitude(selectedLocation.getLatitude());
-        locationSample.setLongitude(selectedLocation.getLongitude());
-        locationSample.setAccuracy((double) selectedLocation.getAccuracy());
-        locationSample.setProvider(selectedLocation.getProvider());
-        locationSample.setAltitude(selectedLocation.getAltitude());
+        if (selectedLocation != null) {
+
+          Coordinate coordinate = new Coordinate();
+
+          coordinate.setLatitude(selectedLocation.getLatitude());
+          coordinate.setLongitude(selectedLocation.getLongitude());
+          coordinate.setAccuracy((double) selectedLocation.getAccuracy());
+          coordinate.setProvider(selectedLocation.getProvider());
+          coordinate.setAltitude(selectedLocation.getAltitude());
+
+          locationSample.setCoordinate(coordinate);
+        }
 
         DataStore store = new DataStore();
         store.open(DataEntryActivity.this);
@@ -168,10 +195,10 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
         DataEntryActivity.this.houseNumber.setText(null);
         DataEntryActivity.this.houseName.setText(null);
 
-        accuracyIStandStill.setChecked(false);
-        ruleBasedPostalTown = false;
+        positionRadioGroup.clearCheck();
 
-        selectedLocation = null;
+        selectedLocationIStandStill = null;
+        selectedLocationIMove = null;
       }
 
 
@@ -190,7 +217,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
 
     locationService = new CompoundLocationService(this);
-    locationService.setMaximumMillisecondsAgeOfGpsLocation(maximumMillisecondsAgeOfLocationFix);
+    locationService.setMaximumMillisecondsAgeOfGpsLocation(10000);
     locationService.start();
 
 
@@ -209,7 +236,7 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     startService(new Intent(this, PublisherService.class));
 
-    accuracyIStandStill.setChecked(false);
+    positionRadioGroup.clearCheck();
 
     LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
     if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -218,15 +245,14 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     locationService.requestLocationUpdates(this);
 
+    accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+    accuracyProgressBar.setProgress(0);
+
     Location mostRecentLocation = locationService.getMostRecentLocation();
     if (mostRecentLocation != null) {
       onLocationChanged(mostRecentLocation);
     }
 
-//    accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-//    accuracyProgressBar.setProgress(0);
-
-    new Thread(assertGoodLocationFixRunnable).start();
 
   }
 
@@ -240,10 +266,9 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   protected void onPause() {
     super.onPause();
 
-    accuracyIStandStill.setChecked(false);
+    positionRadioGroup.clearCheck();
 
     locationService.removeUpdates(this);
-    assertGoodLocationFixRunnable.stop = true;
   }
 
   @Override
@@ -288,44 +313,57 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
 
     mostRecentLocation = location;
 
-    if (accuracyIStandStill.isChecked()) {
-      if (selectedLocation == null
-          || selectedLocation.getAccuracy() > location.getAccuracy()) {
-        selectedLocation = location;
-      }
-    } else {
-      selectedLocation = location;
 
+    if (selectedLocationIStandStill == null
+        || selectedLocationIStandStill.getAccuracy() > location.getAccuracy()) {
+      selectedLocationIStandStill = location;
     }
 
+    if (selectedLocationIMove == null) {
+      selectedLocationIMove = location;
+    }
 
-    if (selectedLocation.getAccuracy() > 15) {
+    Location displayLocation = null;
+    if (positionIStandStill.isChecked()) {
+      displayLocation = selectedLocationIStandStill;
+
+    } else if (positionIMove.isChecked()) {
+      displayLocation = selectedLocationIMove;
+
+    } else if (positionImNotThere.isChecked()) {
+      displayLocation = location;
+
+    } else {
+      displayLocation = location;
+    }
+
+    if (displayLocation.getAccuracy() > 15) {
       // todo Är du inomhus? Gå till ett fönster så nära ingången som möjligt!
     }
 
-    if (selectedLocation.getAccuracy() < 10) {
+    if (displayLocation.getAccuracy() < 10) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#35BF00"), PorterDuff.Mode.SRC_IN);
-    } else if (selectedLocation.getAccuracy() < 20) {
+    } else if (displayLocation.getAccuracy() < 20) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#76C600"), PorterDuff.Mode.SRC_IN);
-    } else if (selectedLocation.getAccuracy() < 25) {
+    } else if (displayLocation.getAccuracy() < 25) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#99CA00"), PorterDuff.Mode.SRC_IN);
-    } else if (selectedLocation.getAccuracy() < 30) {
+    } else if (displayLocation.getAccuracy() < 30) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#BCCE00"), PorterDuff.Mode.SRC_IN);
-    } else if (selectedLocation.getAccuracy() < 40) {
+    } else if (displayLocation.getAccuracy() < 40) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#D5A400"), PorterDuff.Mode.SRC_IN);
-    } else if (selectedLocation.getAccuracy() < 50) {
+    } else if (displayLocation.getAccuracy() < 50) {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#D98400"), PorterDuff.Mode.SRC_IN);
     } else {
       accuracyProgressBar.getProgressDrawable().setColorFilter(Color.parseColor("#E51E00"), PorterDuff.Mode.SRC_IN);
     }
 
-    float progress = (100f - selectedLocation.getAccuracy());
+    float progress = (100f - displayLocation.getAccuracy());
     if (progress < 0) {
       progress = 5;
     }
 
     accuracyProgressBar.setProgress((int) progress);
-    accuracyValue.setText(String.valueOf((int) selectedLocation.getAccuracy()) + " meter.");
+    accuracyValue.setText(String.valueOf((int) displayLocation.getAccuracy()) + " meter.");
 
 
   }
@@ -392,46 +430,6 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
   }
 
 
-  private class AssertGoodLocationFixRunnable implements Runnable {
-    private boolean stop = true;
-
-    @Override
-    public void run() {
-      stop = false;
-      try {
-
-        while (!stop) {
-          // Can't touch views from anything but the UI-thread!
-          runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-
-              if (!accuracyIStandStill.isChecked()
-                  && mostRecentLocation != null
-                  && mostRecentLocation.getTime() < System.currentTimeMillis() - maximumMillisecondsAgeOfLocationFix) {
-
-                accuracyProgressBar.getProgressDrawable().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-                accuracyProgressBar.setProgress(0);
-
-              }
-
-            }
-          });
-
-          try {
-            Thread.sleep(1000);
-          } catch (InterruptedException ie) {
-            Log.e("AssertGoodLocationFixRunnable", "Caught interruption", ie);
-          }
-        }
-
-      } finally {
-        Log.i("AssertGoodLocationFixRunnable", "stopping");
-        stop = true;
-      }
-    }
-
-  }
 
 
 }
