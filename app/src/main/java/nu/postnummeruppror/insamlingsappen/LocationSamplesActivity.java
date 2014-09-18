@@ -58,6 +58,8 @@ public class LocationSamplesActivity extends ActionBarActivity {
     addColumn(row, "Gata");
     addColumn(row, "Hus");
     addColumn(row, "Uppgång");
+    table.addView(row);
+
 
     DataStore dataStore = new DataStore();
     dataStore.open(this);
