@@ -49,6 +49,16 @@ public class LocationSamplesActivity extends ActionBarActivity {
 
     TableLayout table = (TableLayout)findViewById(R.id.location_reports_table);
 
+    table.removeAllViews();
+
+    TableRow row = new TableRow(this);
+    row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+    addColumn(row, "Postort");
+    addColumn(row, "Postnummer");
+    addColumn(row, "Gata");
+    addColumn(row, "Hus");
+    addColumn(row, "Uppgång");
+
     DataStore dataStore = new DataStore();
     dataStore.open(this);
     try {
@@ -59,7 +69,7 @@ public class LocationSamplesActivity extends ActionBarActivity {
 
       for (LocationSample locationSample : locationSamples) {
 
-        TableRow row = new TableRow(this);
+        row = new TableRow(this);
         row.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
 
         if (locationSample.getPostalAddress() != null) {
