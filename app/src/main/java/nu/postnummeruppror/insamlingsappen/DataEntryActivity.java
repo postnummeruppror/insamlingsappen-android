@@ -140,14 +140,18 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
           } else {
             selectedLocation = selectedLocationIStandStill;
           }
-        }
-
-        if (positionIMove.isChecked()) {
+        } else if (positionIMove.isChecked()) {
           if (selectedLocationIMove == null) {
             Toast.makeText(DataEntryActivity.this, "Ingen position! Rapporten avbröts!", Toast.LENGTH_LONG).show();
           } else {
             selectedLocation = selectedLocationIMove;
           }
+        } else if (positionImNotThere.isChecked()) {
+          selectedLocation = null;
+
+        } else {
+          Toast.makeText(DataEntryActivity.this, "Du måste berätta hur vi skall tolka din position! Rapporten avbröts!", Toast.LENGTH_LONG).show();
+          return;
         }
 
 
