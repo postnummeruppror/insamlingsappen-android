@@ -2,8 +2,11 @@ package nu.postnummeruppror.insamlingsappen;
 
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.method.LinkMovementMethod;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.TextView;
+
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
 
 public class HelpActivity extends ActionBarActivity {
@@ -12,6 +15,12 @@ public class HelpActivity extends ActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_help);
+
+      TextView text = (TextView)findViewById(R.id.help_text);
+
+      // make mailto-link clickable
+      text.setMovementMethod(LinkMovementMethod.getInstance());
+
     }
 
 

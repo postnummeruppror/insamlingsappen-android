@@ -62,8 +62,18 @@
     <string name="location_reports_header_house_name">Uppgång</string>
     <string name="title_activity_help">Hjälp</string>
   <string name="help_text">Var kan man hitta postnummer?
-\n\nBe om kvitto när du köper något, där står nästan alltid postnummret. Men kontrollera så det är exempelvis adressen till kedjans huvudkontoret eller liknande.
-\n\nFråga dem som bor där du befinner dig.</string>
+\n\nBe om kvitto när du köper något, där står nästan alltid postnummret. Men kontrollera så det är adressen där du befinner dig i stället för exempelvis adressen till kedjans huvudkontor eller liknande.
+\n\nFråga dem som bor där du befinner dig.
+\n\nHar du fler tips? Hör av dig så listar vi dem här!
+\n<a href="mailto:postnummeruppror@gmail.com">postnummeruppror@gmail.com</a>.
+\n\n\nVad är skillnaden på de olika positioneringsvalen?
+\n\nVi ber dig välja positioneringsmodell baserat på ditt beteende i stället för att beskriva den bakomliggande tekniken då det senare helt enkelt tar för mycket plats att skriva ner.
+\n\nDet första valet, \'Jag befinner mig på postadressen tills dess jag registerar den\' betyder att applikationen väljer den positionering med bäst noggrannhet. Tittar du på "positioneringsen noggrannhet" så kommer du märka att den aldrig blir högre, däremot kan den bli lägre. Detta val förutsätter att du inte rör på dig från den postadress du registerar. Om du är inomhus är det helt OK att du är går och ställer dig vid ett fönster för att få en bättre positioneringsfix så länge du fortfarande befinner dig på samma postadress.
+\n\nDet andra valet, \'Jag befinner mig på postadressen nu men går vidare innan den registrerats\' betyder att applikationen väljer den första positioneringen som hittas efter att du väljer denna metod. Detta är vettigt om du exempelvis är ute och går och passar på att registrera husnummer men inte vill stanna till hela tiden. Positioneringen blir generellt sett sämre, men har du GPS påslaget bör det inte vara något problem.
+\n\nDet tredje valet, \'Använd inte min position, den har inget att göra med postadressen jag registerar\' betyder att applikationen frånser din position och enbart registrerar själva postadressen. Detta kan du göra om du känner till att en postadress existerar men inte befinner dig i närheten.
+\nVi är absolut intresserade av att samla på oss exempelvis vilka postnummer som är kopplat med en viss postort, vilka gatunamn som existerar i ett visst postnummer, osv!
+</string>
+
   <string name="action_help">Hjälp</string>
   <string name="location_radio_header">Hur skall din nuvarande position användas?</string>
   <string name="location_radio_i_stand_still">Jag befinner mig på postadressen tills dess att jag registrerat den.</string>
