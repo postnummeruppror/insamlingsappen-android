@@ -8,6 +8,8 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import org.w3c.dom.Text;
+
 import java.util.List;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
@@ -94,14 +96,18 @@ public class LocationSamplesActivity extends ActionBarActivity {
 
   }
 
-  private void addColumn(TableRow row, String text) {
+  private TextView addColumn(TableRow row, String text) {
 
     TextView column = new TextView(this);
     column.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, TableRow.LayoutParams.WRAP_CONTENT));
+    column.setPadding(3,0,3,0);
     column.setText(text);
 
     row.addView(column);
 
+
+
+    return column;
   }
 
 }
