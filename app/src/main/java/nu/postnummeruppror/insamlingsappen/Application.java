@@ -6,7 +6,7 @@ package nu.postnummeruppror.insamlingsappen;
 public class Application {
 
   public static final String application = "insamlingsappen-android";
-  public static final String version = "0.0.7";
+  public static final String version = "0.0.8";
 
   public static final String serverHostname = "insamling.postnummeruppror.nu";
   public static final String serverVersion = "0.0.5";
