@@ -14,90 +14,88 @@
     android:orientation="vertical"
     android:visibility="visible">
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:text="@string/server_number_of_accounts"/>
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/server_number_of_accounts"/>
 
-      <TextView
+          <TextView
         android:id="@+id/server_statistics_number_of_accounts"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/not_applicable"/>
+        android:text="@string/not_applicable"
+          android:textSize="40dp" />
+      </LinearLayout>
 
-    </LinearLayout>
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
 
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/server_statistics_number_of_postal_codes"/>
 
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
-
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:text="@string/server_statistics_number_of_postal_codes"/>
-
-      <TextView
+          <TextView
         android:id="@+id/server_statistics_number_of_postal_codes"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/not_applicable"/>
+        android:text="@string/not_applicable"
+              android:textSize="40dp" />
 
-    </LinearLayout>
+      </LinearLayout>
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:text="@string/server_statistics_number_of_postal_towns"/>
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
 
-      <TextView
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/server_statistics_number_of_postal_towns"/>
+
+          <TextView
         android:id="@+id/server_statistics_number_of_postal_towns"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/not_applicable"/>
-
-    </LinearLayout>
-
-
+        android:text="@string/not_applicable"
+              android:textSize="40dp" />
+      </LinearLayout>
 
 
-    <!-- antal rapporter -->
+      <!-- antal rapporter -->
 
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                  android:layout_width="wrap_content"
-                  android:layout_height="wrap_content"
-                  android:orientation="horizontal">
+      <LinearLayout
+          android:orientation="vertical"
+          android:layout_width="fill_parent"
+          android:layout_height="fill_parent">
 
-      <TextView
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="16dp"
-        android:text="@string/server_number_of_location_samples"/>
+          <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginRight="16dp"
+            android:text="@string/server_number_of_location_samples"/>
 
-      <TextView
+          <TextView
         android:id="@+id/server_statistics_number_of_location_samples"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:text="@string/not_applicable"/>
+        android:text="@string/not_applicable"
+              android:textSize="40dp" />
+      </LinearLayout>
 
-    </LinearLayout>
-
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+      <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
                   android:layout_width="wrap_content"
                   android:layout_height="wrap_content"
                   android:orientation="horizontal">
