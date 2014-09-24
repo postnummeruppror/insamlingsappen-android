@@ -9,7 +9,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
-import nu.postnummeruppror.insamlingsappen.commands.GetNumberOfLocationStatisticsInRadius;
+import nu.postnummeruppror.insamlingsappen.commands.GetNumberOfLocationSamplesInRadius;
 import nu.postnummeruppror.insamlingsappen.commands.GetServerStatistics;
 
 
@@ -87,22 +87,22 @@ public class StatisticsActivity extends ActionBarActivity {
       @Override
       public void run() {
 
-        final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
-        getNumberOfLocationStatisticsInRadius.setCentroidLatitude(latitude);
-        getNumberOfLocationStatisticsInRadius.setCentroidLongitude(longitude);
-        getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.100d);
-        getNumberOfLocationStatisticsInRadius.run();
+        final GetNumberOfLocationSamplesInRadius getNumberOfLocationSamplesInRadius = new GetNumberOfLocationSamplesInRadius();
+        getNumberOfLocationSamplesInRadius.setCentroidLatitude(latitude);
+        getNumberOfLocationSamplesInRadius.setCentroidLongitude(longitude);
+        getNumberOfLocationSamplesInRadius.setRadiusKilometers(0.100d);
+        getNumberOfLocationSamplesInRadius.run();
 
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            if (getNumberOfLocationStatisticsInRadius.getSuccess()) {
+            if (getNumberOfLocationSamplesInRadius.getSuccess()) {
 
-              server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationStatisticsInRadius.getNumberOfLocationSamples()));
+              server_statistics_locationSamplesWithinOneHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationSamplesInRadius.getNumberOfLocationSamples()));
 
             } else {
-              Toast.makeText(StatisticsActivity.this, getNumberOfLocationStatisticsInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
-              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationStatisticsInRadius.getFailureMessage(), getNumberOfLocationStatisticsInRadius.getFailureException());
+              Toast.makeText(StatisticsActivity.this, getNumberOfLocationSamplesInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationSamplesInRadius.getFailureMessage(), getNumberOfLocationSamplesInRadius.getFailureException());
 
             }
           }
@@ -114,22 +114,22 @@ public class StatisticsActivity extends ActionBarActivity {
       @Override
       public void run() {
 
-        final GetNumberOfLocationStatisticsInRadius getNumberOfLocationStatisticsInRadius = new GetNumberOfLocationStatisticsInRadius();
-        getNumberOfLocationStatisticsInRadius.setCentroidLatitude(latitude);
-        getNumberOfLocationStatisticsInRadius.setCentroidLongitude(longitude);
-        getNumberOfLocationStatisticsInRadius.setRadiusKilometers(0.500d);
-        getNumberOfLocationStatisticsInRadius.run();
+        final GetNumberOfLocationSamplesInRadius getNumberOfLocationSamplesInRadius = new GetNumberOfLocationSamplesInRadius();
+        getNumberOfLocationSamplesInRadius.setCentroidLatitude(latitude);
+        getNumberOfLocationSamplesInRadius.setCentroidLongitude(longitude);
+        getNumberOfLocationSamplesInRadius.setRadiusKilometers(0.500d);
+        getNumberOfLocationSamplesInRadius.run();
 
         runOnUiThread(new Runnable() {
           @Override
           public void run() {
-            if (getNumberOfLocationStatisticsInRadius.getSuccess()) {
+            if (getNumberOfLocationSamplesInRadius.getSuccess()) {
 
-              server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationStatisticsInRadius.getNumberOfLocationSamples()));
+              server_statistics_locationSamplesWithinFiveHundredMetersRadiusTextView.setText(String.valueOf(getNumberOfLocationSamplesInRadius.getNumberOfLocationSamples()));
 
             } else {
-              Toast.makeText(StatisticsActivity.this, getNumberOfLocationStatisticsInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
-              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationStatisticsInRadius.getFailureMessage(), getNumberOfLocationStatisticsInRadius.getFailureException());
+              Toast.makeText(StatisticsActivity.this, getNumberOfLocationSamplesInRadius.getFailureMessage(), Toast.LENGTH_SHORT).show();
+              Log.e("GetNumberOfLocationStatisticsInRadius", getNumberOfLocationSamplesInRadius.getFailureMessage(), getNumberOfLocationSamplesInRadius.getFailureException());
 
             }
           }

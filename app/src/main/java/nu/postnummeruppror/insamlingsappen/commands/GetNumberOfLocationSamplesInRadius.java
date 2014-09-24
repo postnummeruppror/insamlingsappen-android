@@ -6,7 +6,7 @@ import org.json.JSONObject;
 /**
  * Created by kalle on 08/09/14.
  */
-public class GetNumberOfLocationStatisticsInRadius extends ServerJSONAPICommand {
+public class GetNumberOfLocationSamplesInRadius extends ServerJSONAPICommand {
 
   private Double centroidLatitude;
   private Double centroidLongitude;
