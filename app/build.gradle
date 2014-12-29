@@ -8,8 +8,8 @@ android {
     applicationId "nu.postnummeruppror.insamlingsappen"
     minSdkVersion 10
     targetSdkVersion 20
-    versionCode 9
-    versionName "0.0.9"
+    versionCode 11
+    versionName "0.0.11"
   }
   buildTypes {
     release {

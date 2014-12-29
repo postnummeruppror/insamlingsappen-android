@@ -31,6 +31,8 @@ public abstract class ServerJSONAPICommand implements Runnable {
   private String failureMessage;
   private Exception failureException;
 
+  private String apiVersion = Application.serverVersion;
+
   /**
    * @return Path part of URL suffixing /api/[version]/, e.g. 'location_sample/search'
    */
@@ -74,7 +76,7 @@ public abstract class ServerJSONAPICommand implements Runnable {
         while (suffix.startsWith("/")) {
           suffix = suffix.substring(1);
         }
-        HttpPost post = new HttpPost("http://" + Application.serverHostname + "/api/" + Application.serverVersion + "/" + suffix);
+        HttpPost post = new HttpPost("http://" + Application.serverHostname + "/api/" + apiVersion + "/" + suffix);
         post.setEntity(new StringEntity(json.toString(), "UTF-8"));
 
         response = httpClient.execute(post);
@@ -140,5 +142,13 @@ public abstract class ServerJSONAPICommand implements Runnable {
 
   public Exception getFailureException() {
     return failureException;
+  }
+
+  public String getApiVersion() {
+    return apiVersion;
+  }
+
+  public void setApiVersion(String apiVersion) {
+    this.apiVersion = apiVersion;
   }
 }

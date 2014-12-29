@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.Settings;
 import android.support.v7.app.ActionBarActivity;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +27,11 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import insamlingsappen.postnummeruppror.nu.insamlingsappen.R;
+import nu.postnummeruppror.insamlingsappen.commands.FindPostalTownFromPostalCode;
 import nu.postnummeruppror.insamlingsappen.domain.Account;
 import nu.postnummeruppror.insamlingsappen.domain.Coordinate;
 import nu.postnummeruppror.insamlingsappen.domain.LocationSample;
@@ -111,6 +117,41 @@ public class DataEntryActivity extends ActionBarActivity implements LocationList
     houseName = (EditText) findViewById(R.id.location_house_name);
 
     submit = (Button) findViewById(R.id.submit_location_sample);
+
+    postalCode.addTextChangedListener(new TextWatcher() {
+      @Override
+      public void beforeTextChanged(CharSequence charSequence, int start, int count, int after) {
+
+      }
+
+      @Override
+      public void onTextChanged(CharSequence charSequence, int start, int before, int count) {
+
+      }
+
+      @Override
+      public void afterTextChanged(Editable editable) {
+        if (postalTown.getText().toString().isEmpty()
+            && postalCode.getText().toString().length() == 5) {
+          FindPostalTownFromPostalCode find = new FindPostalTownFromPostalCode(){
+            @Override
+            protected void processSuccessfulResponse(JSONObject responseJSON) throws JSONException {
+              super.processSuccessfulResponse(responseJSON);
+              if (postalTown.getText().toString().isEmpty()) {
+                DataEntryActivity.this.runOnUiThread(new Runnable(){
+                  @Override
+                  public void run() {
+                    postalTown.setText(getPostalTown());
+                  }
+                });
+              }
+            }
+          };
+          find.setPostalCode(postalCode.getText().toString());
+          new Thread(find).start();
+        }
+      }
+    });
 
     submit.setOnClickListener(new View.OnClickListener() {
       @Override
